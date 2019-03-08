@@ -1,0 +1,18 @@
+<div
+    fxLayout="row"
+    fxLayout.sm="column"
+    fxLayout.xs="column"
+    fxLayoutAlign="start center"
+    fxLayoutAlign.xs="start start"
+    fxLayoutAlign.sm="start start"
+    fxLayoutGap="5px">
+    <mat-form-field class="width-60">
+        <mat-select placeholder="Select Company" (selectionChange)="applyCompanyFilter($event)">
+            <mat-option [value]="null"><strong>All Companies</strong></mat-option>
+            <mat-divider></mat-divider>
+            <mat-option *ngFor="let company of companies" [value]="company.id">
+                {{company.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>

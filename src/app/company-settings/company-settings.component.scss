@@ -1,0 +1,7 @@
+.dialog-container {
+    min-height: 400px;
+}
+
+mat-cell:last-child, mat-footer-cell:last-child, mat-header-cell:last-child {
+    padding-right: 0 !important;
+}

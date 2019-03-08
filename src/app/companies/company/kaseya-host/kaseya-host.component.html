@@ -1,0 +1,28 @@
+<mat-expansion-panel (opened)="initKaseyaHostExpansionPanel()" [expanded]="routeParams.panelId === 'kaseya' ? true : false">
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            Kaseya
+        </mat-panel-title>
+        <mat-panel-description>
+            Configure Kaseya Host and other configurations
+        </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <mat-progress-bar color="accent" mode="indeterminate" *ngIf="showLoadingSpinner['init']"></mat-progress-bar>
+
+    <ng-template matExpansionPanelContent>
+        <div fxLayout="row">
+            <div fxFlex="25"></div>
+            <div fxLayout="column">
+                <app-company-kaseya-host-form
+                    *ngIf="showLoadingSpinner['init'] === false"
+                    [showLoadingSpinner]="showLoadingSpinner"
+                    [companyId]="companyId"
+                    [kaseyaHost]="kaseyaHost"
+                    (save)="handleSave($event)">
+                </app-company-kaseya-host-form>
+            </div>
+            <div fxFlex="25"></div>
+        </div>
+    </ng-template>
+</mat-expansion-panel>

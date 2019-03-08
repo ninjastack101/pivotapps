@@ -1,0 +1,76 @@
+<mat-expansion-panel (opened)="initApiKeysExpansionPanel()" [expanded]="routeParams.panelId === 'api-keys' ? true : false">
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            API Keys
+        </mat-panel-title>
+        <mat-panel-description>
+            Configure API Keys to interact with Otto's APIs
+        </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <mat-progress-bar color="accent" mode="indeterminate" *ngIf="showLoadingSpinner['init']"></mat-progress-bar>
+
+    <ng-template matExpansionPanelContent>
+        <button class="save-button-min-width" mat-raised-button (click)="addNewApiKeyInput()">Add API Key</button>
+        <div *ngIf="apiKeysForm" fxLayout="row">
+            <div fxFlex="25"></div>
+            <form fxFlex class="api-keys-form" [formGroup]="apiKeysForm">
+                <div class="loading-spinner-overlay" *ngIf="showLoadingSpinner['loading']">
+                    <mat-spinner color="accent"></mat-spinner>
+                </div>
+                <div formArrayName="apiKeys" *ngFor="let apiKey of apiKeysForm.get('apiKeys').controls; let i = index;">
+                    <div [formGroupName]="i" fxLayout="row" fxLayout.sm="column" fxLayoutGap="25px">
+
+                        <mat-form-field class="material-input-inline">
+                            <input
+                                matTooltipClass="tooltip-expanded"
+                                matInput
+                                name="apiKeyName"
+                                type="text"
+                                formControlName="name"
+                                placeholder="Name">
+                        </mat-form-field>
+    
+                        <mat-form-field class="material-input-inline">
+                            <input
+                                matTooltipClass="tooltip-expanded"
+                                matInput
+                                name="ottoApiKeyName"
+                                [type]="(hideApiKeys[i] || hideApiKeys[i] === undefined) ? 'password' : 'text'"
+                                formControlName="apiKey"
+                                placeholder="API Key">
+                            <mat-icon matSuffix (click)="toggleApiKeyVisibility(i)">{{ hideApiKeys[i] ? 'visibility_off' : 'visibility' }}</mat-icon>
+                        </mat-form-field>
+                        
+    
+                        <button matTooltip="Copy API Key to clipboard" mat-icon-button (click)="copyToClipboard(i)">
+                            <mat-icon>file_copy</mat-icon>
+                        </button>
+
+                        <button matTooltip="Delete API Key" mat-icon-button (click)="removeApiKeyInput(i)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </div>
+                </div>
+    
+                <div fxLayout="row" fxLayoutGap="10px">
+                    <button
+                        *ngIf="apiKeysForm.get('apiKeys').controls.length"
+                        [disabled]="showLoadingSpinner['saveApiKeys'] || !apiKeysForm.valid"
+                        class="save-button"
+                        (click)="saveApiKeysForm()"
+                        mat-raised-button>
+                        <span>Save</span>
+                        <mat-progress-spinner
+                            *ngIf="showLoadingSpinner['saveApiKeys']"
+                            mode="indeterminate"
+                            diameter="25"
+                            class="inline-block">
+                        </mat-progress-spinner>
+                    </button>
+                </div>
+            </form>
+            <div fxFlex="25"></div>
+        </div>
+    </ng-template>
+</mat-expansion-panel>

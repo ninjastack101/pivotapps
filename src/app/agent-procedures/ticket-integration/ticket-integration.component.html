@@ -1,0 +1,78 @@
+<mat-expansion-panel (opened)="buildTicketIntegrationForm()">
+    <mat-expansion-panel-header>
+        <mat-panel-title>Ticket Integration</mat-panel-title>
+        <mat-panel-description>Configure fields for ticket system integration</mat-panel-description>
+    </mat-expansion-panel-header>
+    <mat-progress-bar color="accent" mode="indeterminate" *ngIf="showLoadingSpinner['init']"></mat-progress-bar>
+
+    <div fxLayout="row">
+        <div fxFlex="25"></div>
+        <div fxLayout="column">
+            <div class="edit-form">
+                <app-table-filter>
+                    <app-search-box
+                        name="userCompany"
+                        placeholder="Begin typing here to filter results by company"
+                        (change)="applySearchFilter($event)">
+                    </app-search-box>
+                </app-table-filter>
+        
+                <div class="table-container mat-elevation-z8">
+                    <div class="loading-spinner-overlay" *ngIf="showLoadingSpinner['init'] || showLoadingSpinner['saveUserData']">
+                        <mat-spinner color="accent"></mat-spinner>
+                    </div>
+                    <mat-table #table [dataSource]="dataSource" matSort matSortActive="companyName" matSortDirection="asc">
+                        <ng-container matColumnDef="companyName">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>Company</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{ element.companyName }}</mat-cell>
+                        </ng-container>
+    
+                        <ng-container matColumnDef="createTicket">
+                            <mat-header-cell *matHeaderCellDef>Create Ticket</mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                <mat-checkbox color="primary" [checked]="element.createTicket" disabled="true"></mat-checkbox>
+                            </mat-cell>
+                        </ng-container>
+    
+                        <ng-container matColumnDef="billable">
+                            <mat-header-cell *matHeaderCellDef>Billable</mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                <mat-checkbox color="primary" [checked]="element.billable" disabled="true"></mat-checkbox>
+                            </mat-cell>
+                        </ng-container>
+    
+                        <ng-container matColumnDef="timeToLog">
+                            <mat-header-cell *matHeaderCellDef>Time to log</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{ element.timeToLog }}</mat-cell>
+                        </ng-container>
+    
+                        <ng-container matColumnDef="technicianName">
+                            <mat-header-cell *matHeaderCellDef>Technician Name</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{ element.technicianName }}</mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="edit">
+                            <mat-header-cell class="checkbox-column-container" *matHeaderCellDef>Edit</mat-header-cell>
+                            <mat-cell class="checkbox-column-container" *matCellDef="let element">
+                                <button (click)="openTicketDialog(element)" mat-icon-button>
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </mat-cell>
+                        </ng-container>
+        
+                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                        <mat-row class="material-table-row" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                    </mat-table>
+        
+                    <mat-paginator
+                        #paginator
+                        [pageSize]="paginationOptions.pageSize"
+                        [pageSizeOptions]="paginationOptions.pageSizeOptions"
+                        [showFirstLastButtons]="true">
+                    </mat-paginator>
+                </div>
+            </div>
+        </div>
+        <div fxFlex="25"></div>
+    </div>
+</mat-expansion-panel>

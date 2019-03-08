@@ -1,0 +1,105 @@
+<div fxLayout="row">
+    <div fxFlex="15"></div>
+    <div fxLayout="column" class="categories-container">
+        <h3>Update Subcategories</h3>
+        <app-table-filter>
+            <app-department-filter
+                [fxLayoutGap]="'10px'"
+                [showCategoryFilter]="true"
+                [showSubCategoryFilter]="false"
+                (emptySelection)="applyEmptySelection()"
+                (selectionChange)="applyDepartmentFilter($event)">
+            </app-department-filter>
+            <app-search-box
+                name="subCategoryName"
+                placeholder="Begin typing here to filter results"
+                (change)="applySearchFilter($event)">
+            </app-search-box>
+        </app-table-filter>
+
+        <div class="mat-elevation-z8 table-container">
+            <div class="loading-spinner-overlay" *ngIf="!departments || !categories || !subCategories || showLoadingSpinner['overlay']">
+                <mat-spinner color="accent"></mat-spinner>
+            </div>
+            <mat-table #table [dataSource]="dataSource" matSort matSortActive="name" matSortDirection="asc">
+                <ng-container matColumnDef="departmentName">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef>Department Name</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field>
+                            <mat-select disabled required [value]="categoryToDepartmentMap.get(element.categoryId)">
+                                <mat-option *ngFor="let department of departments" [value]="department.id">{{ department.name }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="categoryName">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef>Category Name</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field>
+                            <mat-select required [(value)]="element.categoryId">
+                                <mat-option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="name">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef>Subcategory Name</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field>
+                            <input required type="text" name="subCategoryName" matInput [(ngModel)]="element.name">
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="delete">
+                    <mat-header-cell fxFlex="10" *matHeaderCellDef>
+                        Delete
+                    </mat-header-cell>
+                    <mat-cell fxFlex="10" *matCellDef="let row">
+                        <button (click)="deleteSubCategory(row.id)" type="button" mat-icon-button>
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="settings">
+                    <mat-header-cell *matHeaderCellDef>
+                        Settings
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                        <button (click)="manageSubCategorySettings(row.id)" type="button" mat-icon-button>
+                            <mat-icon>settings</mat-icon>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+            </mat-table>
+
+            <mat-paginator
+                #paginator
+                [pageSize]="paginationOptions.pageSize"
+                [pageSizeOptions]="paginationOptions.pageSizeOptions"
+                [showFirstLastButtons]="true">
+            </mat-paginator>
+
+            <button
+                [disabled]="showLoadingSpinner['save']"
+                class="save-button"
+                color="primary"
+                (click)="saveSubCategories()"
+                mat-raised-button>
+                <span>Save</span>
+                <mat-progress-spinner
+                    *ngIf="showLoadingSpinner['save']"
+                    mode="indeterminate"
+                    diameter="25"
+                    class="inline-block">
+                </mat-progress-spinner>
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,11 @@
+<div fxLayout="row">
+    <div fxFlex="25"></div>
+    <div fxLayout="column">
+        <h3>Create API Skill</h3>
+        <app-agent-procedures-api-skill-form
+            [showLoadingSpinner]="showLoadingSpinner"
+            (save)="handleSave($event)">
+        </app-agent-procedures-api-skill-form>
+    </div>
+    <div fxFlex="25"></div>
+</div>

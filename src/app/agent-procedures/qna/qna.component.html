@@ -1,0 +1,46 @@
+<div>
+    <mat-progress-bar color="accent" mode="indeterminate" *ngIf="!qna"></mat-progress-bar>
+    <div fxLayout="row" *ngIf="qna">
+        <button mat-icon-button (click)="location.back()">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div fxFlex="25"></div>
+        <div fxLayout="column">
+            <div class="loading-spinner-overlay" *ngIf="showLoadingSpinner['overlay']">
+                <mat-spinner color="accent"></mat-spinner>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <h3 fxFlex="100">Edit QnA</h3>
+                <button matTooltip="Delete QnA" mat-icon-button (click)="deleteQnA()">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+            <app-agent-procedures-qna-form
+                [qna]="qna"
+                [showLoadingSpinner]="showLoadingSpinner"
+                (save)="updateQnAForm($event)">
+            </app-agent-procedures-qna-form>
+            <app-last-modified 
+                [skill]="qna">
+            </app-last-modified>
+        </div>
+        <div fxFlex="25"></div>
+    </div>
+    <div *ngIf="qna">
+        <app-agent-procedures-messages
+            [skillId]="qna.id"
+            [messageCategories]="messageCategories"
+            [specializedBotPersonaId]="qna.specializedBotPersonaId">
+        </app-agent-procedures-messages>
+        <app-agent-procedures-permissions
+            skill="Business Skill (QnA)">
+        </app-agent-procedures-permissions>
+        <app-agent-procedures-luis
+            [skillId]="qna.id"
+            [skillName]="qna.name">
+        </app-agent-procedures-luis>
+        <app-ticket-integration
+            [skillId]="qna.id">
+        </app-ticket-integration>
+    </div>
+</div>

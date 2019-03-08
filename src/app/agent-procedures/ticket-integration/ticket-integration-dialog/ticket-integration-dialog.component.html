@@ -1,0 +1,15 @@
+<div class="dialog-container">
+    <h2 mat-dialog-title>{{ dialogData.companyName }}</h2>
+    <mat-dialog-content>
+        <div class="loading-spinner-overlay" *ngIf="showLoadingSpinner['init'] || showLoadingSpinner['saveTicketConfiguration']">
+            <mat-spinner color="accent"></mat-spinner>
+        </div>
+        <app-ticket-integration-form
+            [companyId]="dialogData.companyId"
+            [skillId]="dialogData.skillId"
+            [ticketConfiguration]="ticketConfiguration"
+            [showLoadingSpinner]="showLoadingSpinner"
+            (save)="handleSave($event)">
+        </app-ticket-integration-form>
+    </mat-dialog-content>
+</div>

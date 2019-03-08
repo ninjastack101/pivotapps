@@ -1,0 +1,11 @@
+<div fxLayout="row">
+    <div fxFlex="25"></div>
+    <div fxLayout="column">
+        <h3>Create QnA</h3>
+        <app-agent-procedures-qna-form
+            [showLoadingSpinner]="showLoadingSpinner"
+            (save)="handleSave($event)">
+        </app-agent-procedures-qna-form>
+    </div>
+    <div fxFlex="25"></div>
+</div>

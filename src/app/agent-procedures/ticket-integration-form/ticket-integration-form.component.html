@@ -1,0 +1,102 @@
+<div *ngIf="ticketIntegrationForm" fxLayout="row">
+    <div fxFlex="5"></div>
+    <form fxFlex="80" fxLayout="column" class="edit-form" [formGroup]="ticketIntegrationForm">
+        <mat-slide-toggle color="primary" formControlName="createTicket" (change)="enableCreateTicketForm($event)">Create Ticket</mat-slide-toggle>
+
+        <mat-form-field>
+            <input formControlName="serviceBoardName" name="serviceBoardName" matInput placeholder="Service Board Name">
+            <mat-error *ngIf="formErrors.get('serviceBoardName')">
+                {{ formErrors.get('serviceBoardName') }}
+            </mat-error>
+        </mat-form-field>
+
+        <div class="inline-slide-toggle" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px">
+            <mat-slide-toggle color="primary" formControlName="billable">Billable</mat-slide-toggle>
+            <mat-slide-toggle color="primary" formControlName="includeChatInDescription">Include chat in description</mat-slide-toggle>
+        </div>
+
+        <mat-form-field>
+            <input formControlName="technicianName" name="technicianName" matInput placeholder="Technician Name">
+            <mat-error *ngIf="formErrors.get('technicianName')">
+                {{ formErrors.get('technicianName') }}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <input formControlName="timeToLog" name="timeToLog" matInput placeholder="Time to Log">
+            <mat-error *ngIf="formErrors.get('timeToLog')">
+                {{ formErrors.get('timeToLog') }}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-slide-toggle color="primary" formControlName="logStartEndTime">Log start and end time</mat-slide-toggle>
+
+        <mat-form-field>
+            <input formControlName="priority" name="priority" matInput placeholder="Priority">
+            <mat-error *ngIf="formErrors.get('priority')">
+                {{ formErrors.get('priority') }}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <input formControlName="status" name="status" matInput placeholder="Status">
+            <mat-error *ngIf="formErrors.get('status')">
+                {{ formErrors.get('status') }}
+            </mat-error>
+        </mat-form-field>
+        
+        <mat-form-field>
+            <input formControlName="type" name="type" matInput placeholder="Type">
+            <mat-error *ngIf="formErrors.get('type')">
+                {{ formErrors.get('type') }}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <input formControlName="subType" name="subType" matInput placeholder="Sub-type">
+            <mat-error *ngIf="formErrors.get('subType')">
+                {{ formErrors.get('subType') }}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-slide-toggle color="primary" formControlName="includeAssetName">Include Asset Name</mat-slide-toggle>
+
+        <mat-form-field>
+            <input formControlName="agreementName" name="agreementName" matInput placeholder="Agreement Name">
+            <mat-error *ngIf="formErrors.get('agreementName')">
+                {{ formErrors.get('agreementName') }}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <input formControlName="workRole" name="workRole" matInput placeholder="Work Role">
+            <mat-error *ngIf="formErrors.get('workRole')">
+                {{ formErrors.get('workRole') }}
+            </mat-error>
+        </mat-form-field>
+
+        <div fxLayout="row">
+            <button
+                [disabled]="showLoadingSpinner['saveTicketIntegrationForm'] || showLoadingSpinner['init'] || !ticketIntegrationForm.valid"
+                class="save-button"
+                (click)="saveTicketIntegrationForm()"
+                mat-raised-button>
+                <span>Save</span>
+                <mat-progress-spinner
+                    *ngIf="showLoadingSpinner['saveTicketIntegrationForm']"
+                    mode="indeterminate"
+                    diameter="25"
+                    class="inline-block">
+                </mat-progress-spinner>
+            </button>
+
+            <button
+                [disabled]="showLoadingSpinner['saveTicketIntegrationForm'] || showLoadingSpinner['init']"
+                class="save-button defaults-button"
+                (click)="addDefaults()"
+                mat-raised-button>
+                Use Defaults
+            </button>
+        </div>
+    </form>
+</div>

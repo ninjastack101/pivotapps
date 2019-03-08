@@ -1,0 +1,3 @@
+<mat-form-field class="search-filter-form-field">
+    <input [value]="initialValue || ''" #searchBox [name]="name" (blur)="emitChange(searchBox.value)" matInput (keyup)="emitChange(searchBox.value)" [placeholder]="placeholder">
+</mat-form-field>

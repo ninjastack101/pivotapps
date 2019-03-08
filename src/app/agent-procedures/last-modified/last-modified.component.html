@@ -1,0 +1,3 @@
+<div fxLayout="row" fxLayoutAlign="start">
+    <p fxFlex="100" class="text-gray">Last modified on {{ skill.updatedAt | date: 'medium' }} <span *ngIf="skill.updater">by {{ skill.updater.firstName }} {{ skill.updater.lastName }}</span></p>
+</div>

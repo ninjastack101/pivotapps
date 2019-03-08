@@ -1,0 +1,87 @@
+<div fxLayout="row">
+    <div fxFlex="15"></div>
+    <div fxLayout="column" class="list-agent-procedures-container">
+        <app-table-filter>
+            <app-department-filter
+                [currentDepartmentId]="skillsFilterService.departmentId"
+                [currentCategoryId]="skillsFilterService.categoryId"
+                [currentSubCategoryId]="skillsFilterService.subCategoryId"
+                [fxLayoutGap]="'10px'"
+                (emptySelection)="clearAgentProcedures()"
+                (selectionChange)="applyDepartmentFilter($event)">
+            </app-department-filter>
+            <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="start center">
+                <mat-form-field>
+                    <mat-select placeholder="Skill Type" (selectionChange)="applyFilter($event.value, 3)" [value]="skillsFilterService.skillType">
+                        <mat-option *ngFor="let skillType of skillTypes" [value]="skillType[0]">{{ skillType[1] }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+    
+                <mat-slide-toggle [checked]="skillsFilterService.displayHiddenSkills" (change)="applyFilter($event.checked, 4)" color="primary">Display Hidden Skills</mat-slide-toggle>
+            </div>
+    
+            <mat-menu #createMenu="matMenu">
+                <a routerLink="create/kaseya" mat-menu-item>Technical Skill (Kaseya)</a>
+                <a routerLink="create/url-redirects" mat-menu-item>Business Skill (Share Link)</a>
+                <a routerLink="create/qna" mat-menu-item>Business Skill (QnA)</a>
+                <a routerLink="create/api" mat-menu-item>Technical Skill (API)</a>
+            </mat-menu>
+
+            <app-search-box
+                [initialValue]="skillsFilterService.searchText"
+                name="agentProcedureName"
+                placeholder="Begin typing here to filter results by skill name"
+                (change)="applySearchFilter($event)">
+            </app-search-box>
+
+            <button mat-raised-button (click)="clearFilters()">
+                Clear Filters
+            </button>
+        </app-table-filter>
+
+        <button class="add-new-intent-btn" mat-raised-button color="primary" [matMenuTriggerFor]="createMenu">
+            Add New Skill
+        </button>
+
+        <div class="table-container mat-elevation-z8" fxLayout="column">
+            <div class="loading-spinner-overlay" *ngIf="!skills || showLoadingSpinner['loading']">
+                <mat-spinner color="accent"></mat-spinner>
+            </div>
+            <mat-table #table [dataSource]="dataSource" matSort matSortActive="name" matSortDirection="asc">
+                <ng-container matColumnDef="name">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Skill Name</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{ element.name }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="skillType">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Skill Type</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{ skillTypesMap.get(element.skillType) }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="hiddenFromMenu">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Hidden</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-icon *ngIf="element.hiddenFromMenu">visibility_off</mat-icon>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="duplicate">
+                    <mat-header-cell *matHeaderCellDef>Duplicate</mat-header-cell>
+                    <mat-cell *matCellDef="let row" (click)="duplicateSkill(row); $event.stopPropagation();">
+                        <mat-icon>file_copy</mat-icon>
+                    </mat-cell>
+                </ng-container>
+                
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row class="material-table-row" *matRowDef="let row; columns: displayedColumns;" (click)="navigateUserToEditPage(row)"></mat-row>
+            </mat-table>
+
+            <mat-paginator
+                #paginator
+                [pageSize]="paginationOptions.pageSize"
+                [pageSizeOptions]="paginationOptions.pageSizeOptions"
+                [showFirstLastButtons]="true">
+            </mat-paginator>
+        </div>
+    </div>
+</div>

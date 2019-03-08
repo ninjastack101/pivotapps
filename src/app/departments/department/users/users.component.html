@@ -1,0 +1,71 @@
+<div>
+    <app-table-filter>
+        <app-search-box
+            name="userCompanyDept"
+            placeholder="Begin typing here to filter results by user or department"
+            (change)="applySearchFilter($event)">
+        </app-search-box>
+    </app-table-filter>
+
+    <div class="table-container mat-elevation-z8">
+        <div class="loading-spinner-overlay" *ngIf="showLoadingSpinner['init'] || showLoadingSpinner['saveUserData']">
+            <mat-spinner color="accent"></mat-spinner>
+        </div>
+        <mat-table #table [dataSource]="dataSource" matSort matSortActive="emailAddress" matSortDirection="asc">
+            <ng-container matColumnDef="select">
+                <mat-header-cell class="checkbox-column-container" *matHeaderCellDef>
+                    <mat-checkbox
+                        color="primary"
+                        (change)="$event ? masterToggle() : null"
+                        [checked]="selection?.hasValue() && isAllSelected()"
+                        [indeterminate]="selection?.hasValue() && !isAllSelected()">
+                    </mat-checkbox>
+                </mat-header-cell>
+                <mat-cell class="checkbox-column-container" *matCellDef="let element">
+                    <mat-checkbox
+                        color="primary"
+                        (click)="$event.stopPropagation()"
+                        (change)="$event ? selection.toggle(element.userId + ':' + element.companyDepartmentId) : null"
+                        [checked]="selection.isSelected(element.userId + ':' + element.companyDepartmentId)">
+                    </mat-checkbox>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="emailAddress">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>User</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{ element.emailAddress }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="companyName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Company</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{ element.companyName }}</mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row class="material-table-row" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+
+        <mat-paginator
+            #paginator
+            [pageSize]="paginationOptions.pageSize"
+            [pageSizeOptions]="paginationOptions.pageSizeOptions"
+            [showFirstLastButtons]="true">
+        </mat-paginator>
+    </div>
+
+    <div fxLayout="row">
+        <button
+            [disabled]="showLoadingSpinner['saveUserData']"
+            color="primary"
+            (click)="saveUserData()"
+            mat-raised-button>
+            <span>Save</span>
+            <mat-progress-spinner
+                *ngIf="showLoadingSpinner['saveUserData']"
+                mode="indeterminate"
+                diameter="25"
+                class="inline-block">
+            </mat-progress-spinner>
+        </button>
+    </div>
+</div>

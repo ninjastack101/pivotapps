@@ -1,0 +1,12 @@
+<div>
+    <h2 mat-dialog-title>API Request JSON Schema for {{ dialogData.skillName }}</h2>
+
+    Copy Schema to Clipboard
+    <button mat-icon-button (click)="copyToClipboard()">
+        <mat-icon>file_copy</mat-icon>
+    </button>
+
+    <mat-dialog-content>
+        <pre class="schema-container">{{ schema }}</pre>
+    </mat-dialog-content>
+</div>

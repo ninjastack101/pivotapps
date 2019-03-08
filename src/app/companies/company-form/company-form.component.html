@@ -1,0 +1,91 @@
+<div *ngIf="companyForm">
+    <form fxLayout="column" class="edit-form" [formGroup]="companyForm" (ngSubmit)="updateCompanyForm()">
+        <mat-form-field>
+            <input type="text" formControlName="name" name="companyName" matInput placeholder="Company Name">
+            <mat-error *ngIf="formErrors.get('name')">
+                {{ formErrors.get('name') }}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <input type="text" formControlName="companyIdentifier" name="companyIdentifier" matInput placeholder="Company Identifier">
+            <mat-error *ngIf="formErrors.get('companyIdentifier')">
+                {{ formErrors.get('companyIdentifier') }}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <input type="text" formControlName="logo" name="companyLogo" matInput placeholder="Company Logo">
+            <mat-error *ngIf="formErrors.get('logo')">
+                {{ formErrors.get('logo') }}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="domain-chip-list">
+            <mat-chip-list #chipList>
+                <mat-chip
+                    *ngFor="let domainName of domainNames"
+                    selectable="true"
+                    removable="true"
+                    (removed)="removeDomain(domainName)">
+                    {{ domainName }}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip>
+                <input
+                    placeholder="Domain Names"
+                    [matChipInputFor]="chipList"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                    matChipInputAddOnBlur="true"
+                    (matChipInputTokenEnd)="addDomain($event)" />
+            </mat-chip-list>
+        </mat-form-field>
+
+        <mat-form-field class="material-select-inline">
+            <mat-select placeholder="Preferred Bot Persona" formControlName="preferredBotPersonaId">
+                <mat-option [value]="none">None</mat-option>
+                <mat-option *ngFor="let persona of botPersonas" [value]="persona.BotPersona.id">
+                    <img *ngIf="persona.BotPersona.profilePhoto" class="select-avatar" [src]="persona.BotPersona.profilePhoto"/>
+                    <span>{{ persona.BotPersona.name }}</span>
+                    <i *ngIf="persona.BotPersona.specialized"> ( Specialized ) </i>
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+            <input [type]="hide ? 'password': 'text'" formControlName="luisAuthoringKey" name="companyluisAuthoringKey" matInput placeholder="LUIS Authoring Key">
+            <mat-icon matSuffix (click)="hide = !hide">{{ hide ? 'visibility' : 'visibility_off' }}</mat-icon>
+            <mat-error *ngIf="formErrors.get('luisAuthoringKey')">
+                {{ formErrors.get('luisAuthoringKey') }}
+            </mat-error>
+        </mat-form-field>
+
+        <div class="inline-slide-toggle" fxLayoutAlign="start center" fxLayout="row" fxLayoutGap="15px">
+            <mat-slide-toggle matTooltipClass="tooltip-expanded" matTooltip="Enable this switch if this company is an MSP and manages other companies within ITsupport.bot" color="primary" formControlName="isMSP">Managed Service Provider (MSP)</mat-slide-toggle>
+        </div>
+
+        <mat-form-field class="material-select-inline">
+            <mat-select placeholder="Managed By MSP" formControlName="mspCompanyId">
+                <mat-option [value]="none">None</mat-option>
+                <mat-option *ngFor="let company of mspCompanies" [value]="company.id">
+                    <span>{{ company.name }}</span>
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        
+
+        <button
+            [disabled]="showLoadingSpinner['saveCompanies'] || !companyForm.valid"
+            class="save-button"
+            color="primary"
+            mat-raised-button>
+            <span>Save</span>
+            <mat-progress-spinner
+                *ngIf="showLoadingSpinner['saveCompanies']"
+                mode="indeterminate"
+                diameter="25"
+                class="inline-block">
+            </mat-progress-spinner>
+        </button>
+    </form>
+</div>

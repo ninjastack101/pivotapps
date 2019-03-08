@@ -1,0 +1,114 @@
+<div>
+    <app-table-filter>
+        <app-search-box
+            name="userCompany"
+            placeholder="Begin typing here to filter results by user or company"
+            (change)="applySearchFilter($event)">
+        </app-search-box>
+    </app-table-filter>
+
+    <div class="table-container mat-elevation-z8">
+        <div class="loading-spinner-overlay" *ngIf="showLoadingSpinner['init']">
+            <mat-spinner color="accent"></mat-spinner>
+        </div>
+
+        <mat-table #table [dataSource]="dataSource" matSort>
+            <ng-container matColumnDef="select">
+                <mat-header-cell class="checkbox-column-container" *matHeaderCellDef>
+                    <mat-checkbox
+                        color="primary"
+                        (change)="$event ? masterToggle() : null"
+                        [checked]="selection?.hasValue() && isAllSelected()"
+                        [indeterminate]="selection?.hasValue() && !isAllSelected()">
+                    </mat-checkbox>
+                </mat-header-cell>
+                <mat-cell class="checkbox-column-container" *matCellDef="let row">
+                    <mat-checkbox
+                        color="primary"
+                        (click)="$event.stopPropagation()"
+                        (change)="$event ? selection.toggle(row.id) : null"
+                        [checked]="selection.isSelected(row.id)">
+                    </mat-checkbox>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="name">
+                <mat-header-cell class="max-width-100" *matHeaderCellDef>Company</mat-header-cell>
+                <mat-cell class="max-width-100" *matCellDef="let element">{{ element.name }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="emailAddress">
+                <mat-header-cell *matHeaderCellDef matTooltipClass="tooltip-expanded" matTooltip="Email address used to route the LUIS requests as tickets to.">
+                    Email
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <mat-form-field>
+                        <input type="text" name="compDeptEmail" matInput [(ngModel)]="element.emailAddress">
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="luisEndpoint">
+                <mat-header-cell *matHeaderCellDef matTooltipClass="tooltip-expanded" matTooltip="Please obtain the LUIS endpoint from the bottom of the Publish LUIS screen. For example, https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/7eba194b-b015-46c0-bb37-0b2b2f57191d?subscription-key=33fa9b8aee0843d8ac6fd59d8058a3bc&verbose=true&timezoneOffset=0&q=">
+                    LUIS Endpoint
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <mat-form-field>
+                        <input type="text" name="compDeptLuisEndpoint" matInput [(ngModel)]="element.luisEndpoint">
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="skill">
+                <mat-header-cell *matHeaderCellDef  matTooltipClass="tooltip-expanded" matTooltip="Skill to route the LUIS requests as tickets to.">Skill</mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <mat-form-field>
+                        <input type="text" matInput disabled name="skill" [value]="element.skillInfo?.name">
+                        <mat-icon class="search-icon" matTooltip="Search and select a skill" (click)="searchSkill(element)" matSuffix>search</mat-icon>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="isDefault">
+                <mat-header-cell class="checkbox-column-container" *matHeaderCellDef matTooltipClass="tooltip-expanded" matTooltip="Auto assign users to this department upon signup">Default</mat-header-cell>
+                <mat-cell class="mat-column-select checkbox-column-container" *matCellDef="let element">
+                    <mat-checkbox
+                        color="primary"
+                        (click)="$event.stopPropagation()"
+                        (change)="element.isDefault = !element.isDefault"
+                        [checked]="element.isDefault">
+                    </mat-checkbox>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="hiddenFromMenu">
+                <mat-header-cell class="checkbox-column-container" *matHeaderCellDef matTooltipClass="tooltip-expanded" matTooltip="Hide this department from guided navigation listing">Hidden From Menu</mat-header-cell>
+                <mat-cell class="mat-column-select checkbox-column-container" *matCellDef="let element">
+                    <mat-checkbox
+                        color="primary"
+                        (click)="$event.stopPropagation()"
+                        (change)="element.hiddenFromMenu = !element.hiddenFromMenu"
+                        [checked]="element.hiddenFromMenu">
+                    </mat-checkbox>
+                </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row class="material-table-row" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+    </div>
+
+    <button
+        [disabled]="showLoadingSpinner['saveSettings']"
+        color="primary"
+        (click)="saveSettings()"
+        mat-raised-button>
+        <span>Save</span>
+        <mat-progress-spinner
+            *ngIf="showLoadingSpinner['saveSettings']"
+            mode="indeterminate"
+            diameter="25"
+            class="inline-block">
+        </mat-progress-spinner>
+    </button>
+</div>

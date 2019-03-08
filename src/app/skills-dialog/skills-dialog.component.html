@@ -1,0 +1,37 @@
+<div class="dialog-container">
+    <h2 mat-dialog-title>Select an execution skill</h2>
+    <mat-dialog-content>
+        <div class="loading-spinner-overlay" *ngIf="showLoadingSpinner['overlay']">
+            <mat-spinner color="accent"></mat-spinner>
+        </div>
+        <form fxLayout="column" *ngIf="skillsSelectionForm" [formGroup]="skillsSelectionForm">
+            <mat-radio-group *ngIf="pagedSkills.length" class="radio-group-container" fxLayout="column" fxLayoutGap="10px" formControlName="skillId">
+                <mat-radio-button class="procedure-radio" *ngFor="let skill of pagedSkills" [value]="skill.id" [title]="skill.name">
+                    <div fxLayout="column" fxLayoutGap="10px">
+                        <span class="radio-primary-display">{{ skill.name }}</span>
+                        <span class="radio-secondary-display">{{ skillTypesMap.get(skill.skillType) }}</span>
+                    </div>                    
+                </mat-radio-button>
+            </mat-radio-group>
+        </form>
+    </mat-dialog-content>
+    <mat-dialog-actions fxLayout="column">
+        <mat-paginator
+            #paginator
+            [length]="pageLength"
+            [pageSize]="paginationOptions.pageSize"
+            [pageSizeOptions]="paginationOptions.pageSizeOptions"
+            [showFirstLastButtons]="true"
+            (page)="updatePage($event)">
+        </mat-paginator>
+        <div fxLayout="row" *ngIf="skillsSelectionForm">
+            <button
+                [disabled]="showLoadingSpinner['overlay'] || !skillsSelectionForm.valid"
+                (click)="closeDialogWithResult()"
+                mat-raised-button>
+                Select
+            </button>
+            <button mat-raised-button mat-dialog-close>Close</button>
+        </div>
+    </mat-dialog-actions>
+</div>

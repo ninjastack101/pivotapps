@@ -1,0 +1,113 @@
+<div fxLayout="row">
+    <div fxFlex="15"></div>
+    <div fxLayout="column" class="tab-component-container">
+        <h2>Manage Users assigned to this company.</h2>
+
+        <app-table-filter>
+            <app-search-box
+                name="userCompany"
+                placeholder="Begin typing here to filter results by user"
+                (change)="applySearchFilter($event)">
+            </app-search-box>
+        </app-table-filter>
+
+        <div class="table-container mat-elevation-z8">
+            <div class="loading-spinner-overlay" *ngIf="showLoadingSpinner['init'] || showLoadingSpinner['saveUserData']">
+                <mat-spinner color="accent"></mat-spinner>
+            </div>
+            <mat-table #table [dataSource]="dataSource" matSort matSortActive="emailAddress" matSortDirection="asc">
+                <ng-container matColumnDef="select">
+                    <mat-header-cell class="checkbox-column-container" *matHeaderCellDef>
+                        <mat-checkbox
+                            color="primary"
+                            (change)="$event ? masterToggle() : null"
+                            [checked]="selection?.hasValue() && isAllSelected()"
+                            [indeterminate]="selection?.hasValue() && !isAllSelected()">
+                        </mat-checkbox>
+                    </mat-header-cell>
+                    <mat-cell class="checkbox-column-container" *matCellDef="let row">
+                        <mat-checkbox
+                            color="primary"
+                            (click)="$event.stopPropagation()"
+                            (change)="$event ? selection.toggle(row.userId) : null"
+                            [checked]="selection.isSelected(row.userId)"
+                            [disabled]="selection.isSelected(row.userId) && row.roleId !== null && !roleService.rolesMap.get(row.roleId)">
+                        </mat-checkbox>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="emailAddress">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>User</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{ element.emailAddress }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="role">
+                    <mat-header-cell *matHeaderCellDef>Role</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field>
+                            <mat-select
+                                [(value)]="element.roleId"
+                                [disabled]="selection.isSelected(element.userId) && element.roleId !== null && !roleService.rolesMap.get(element.roleId)">
+                                <mat-option *ngFor="let role of roles" [value]="role.id">
+                                    {{ role.name }}
+                                </mat-option>
+                                <mat-option *ngIf="selection.isSelected(element.userId) && element.roleId !== null && !roleService.rolesMap.get(element.roleId)" [value]="element.roleId">
+                                    No permission to edit
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="shareKaseyaCredentials">
+                    <mat-header-cell *matHeaderCellDef>Share Kaseya Credentials</mat-header-cell>
+                    <mat-cell class="mat-column-select" *matCellDef="let element">
+                        <mat-checkbox
+                            color="primary"
+                            (click)="$event.stopPropagation()"
+                            (change)="element.shareKaseyaCredentials = !element.shareKaseyaCredentials"
+                            [checked]="element.shareKaseyaCredentials"
+                            [disabled]="selection.isSelected(element.userId) && element.roleId !== null && !roleService.rolesMap.get(element.roleId)">
+                        </mat-checkbox>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="assignMachines">
+                    <mat-header-cell matTooltipClass="tooltip-expanded" matTooltip="Assign Kaseya machines to end users. Disabled for users not assigned to this company." *matHeaderCellDef>Machines</mat-header-cell>
+                    <mat-cell class="mat-column-select" *matCellDef="let element">
+                        <span *ngIf="element.id">{{ sharedMachinesMap.get(element.id) }}</span>
+                        <button [disabled]="!endUsersMap.get(element.id)" mat-icon-button (click)="openMachinesDialog(element)">
+                            <mat-icon>add circle outline</mat-icon>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row [title]="selection.isSelected(row.userId) && row.roleId !== null && !roleService.rolesMap.get(row.roleId) ? 'No permission to edit': ''" class="material-table-row" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+
+            <mat-paginator
+                #paginator
+                [pageSize]="paginationOptions.pageSize"
+                [pageSizeOptions]="paginationOptions.pageSizeOptions"
+                [showFirstLastButtons]="true">
+            </mat-paginator>
+        </div>
+
+        <div fxLayout="row">
+            <button
+                [disabled]="showLoadingSpinner['saveUserData']"
+                color="primary"
+                (click)="saveUserData()"
+                mat-raised-button>
+                <span>Save</span>
+                <mat-progress-spinner
+                    *ngIf="showLoadingSpinner['saveUserData']"
+                    mode="indeterminate"
+                    diameter="25"
+                    class="inline-block">
+                </mat-progress-spinner>
+            </button>
+        </div>
+    </div>    
+</div>

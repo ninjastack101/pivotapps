@@ -1,0 +1,9 @@
+<mat-form-field matTooltipClass="tooltip-expanded" matTooltip="Configure hand off and welcome messages using the Messages section below.">
+    <mat-select (selectionChange)="selectionChange.emit($event)" placeholder="Specialized bot persona" [(value)]="currentSpecializedBotPersonaId">
+        <mat-option>None</mat-option>
+        <mat-option *ngFor="let persona of specializedBotPersonas" [value]="persona.id">
+            <img class="select-avatar" [src]="persona.profilePhoto"/>
+            <span>{{ persona.name }}</span>
+        </mat-option>
+    </mat-select>
+</mat-form-field>

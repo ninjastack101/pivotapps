@@ -1,0 +1,50 @@
+<div fxLayout="row">
+  <div fxFlex="15"></div>
+  <div fxLayout="column" class="tab-component-container">
+      <h2>Companies managed by Resellers</h2>
+      <div class="table-container mat-elevation-z8">
+          <mat-table #table [dataSource]="dataSource" matSort>
+              <ng-container matColumnDef="select">
+                  <mat-header-cell class="checkbox-column-container" *matHeaderCellDef="let element">
+                      <mat-checkbox
+                            color="primary"
+                            [checked]="selection?.hasValue() && isAllSelected()"
+                            [indeterminate]="selection?.hasValue() && !isAllSelected()"
+                            disabled="true">
+                        </mat-checkbox>
+                  </mat-header-cell>
+                  <mat-cell class="checkbox-column-container" *matCellDef="let element">
+                      <mat-checkbox
+                          color="primary"
+                          (click)="$event.stopPropagation()"
+                          [checked]="selection.isSelected(element.id)"
+                          disabled="true">
+                      </mat-checkbox>
+                  </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="name">
+                  <mat-header-cell *matHeaderCellDef>Company</mat-header-cell>
+                  <mat-cell *matCellDef="let element">{{ element.name }}</mat-cell>
+                </ng-container>
+              <ng-container matColumnDef="resellerAccount">
+                  <mat-header-cell *matHeaderCellDef>Managed By Reseller</mat-header-cell>
+                  <mat-cell class="checkbox-column-select" *matCellDef="let element">
+                      <mat-checkbox
+                          color="primary"
+                          (click)="$event.stopPropagation()"
+                          (change)="element.resellerAccount = !element.resellerAccount"
+                          [checked]="element.resellerAccount"
+                          disabled="true">
+                      </mat-checkbox>
+                  </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="emailAddress">
+                  <mat-header-cell *matHeaderCellDef>Managed By</mat-header-cell>
+                  <mat-cell *matCellDef="let element">{{ element.emailAddress }}</mat-cell>
+              </ng-container>
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row class="material-table-row" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+      </div>
+  </div>    
+</div>

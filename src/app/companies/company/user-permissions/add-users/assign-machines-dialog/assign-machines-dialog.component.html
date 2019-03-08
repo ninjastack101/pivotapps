@@ -1,0 +1,83 @@
+<div class="dialog-container">
+    <div fxLayout="row">
+        <h2 mat-dialog-title>Assign machines to {{ dialogData.userInfo.emailAddress }}</h2>
+        <div fxFlex></div>
+        <button (click)="closeDialog()" mat-icon-button matTooltip="Close dialog">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <mat-dialog-content>
+        <div class="loading-spinner-overlay" *ngIf="showLoadingSpinner['loading']">
+            <mat-spinner color="accent"></mat-spinner>
+        </div>
+        <p>Assigned Machines</p>
+        <div *ngIf="dataSource" class="table-container mat-elevation-z8">
+            <mat-table #table [dataSource]="dataSource" matSort>
+                <ng-container matColumnDef="computerName">
+                    <mat-header-cell *matHeaderCellDef>Computer Name</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{ element.computerName }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="machineName">
+                    <mat-header-cell *matHeaderCellDef>Machine Name</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{ element.machineName }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="delete">
+                    <mat-header-cell *matHeaderCellDef>
+                        Delete
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                        <button (click)="deleteAssignedMachine(row)" type="button" mat-icon-button>
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+    
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row class="material-table-row" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <p>Add New Machines</p>
+
+        <app-search-kaseya-entities
+            inputName="machineName"
+            placeholder="Enter part of Machine name"
+            tooltipText="Search Machines"
+            entityType="machines"
+            (loading)="handleLoadingEvent($event)"
+            (searchResult)="handleSearchResults($event)">
+        </app-search-kaseya-entities>
+
+        <div *ngIf="searchDataSource" class="table-container mat-elevation-z8">
+            <mat-table #table [dataSource]="searchDataSource" matSort>
+                <ng-container matColumnDef="ComputerName">
+                    <mat-header-cell *matHeaderCellDef>Computer Name</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{ element.ComputerName }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="AgentName">
+                    <mat-header-cell *matHeaderCellDef>Machine Name</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{ element.AgentName }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="add">
+                    <mat-header-cell *matHeaderCellDef>
+                        Add
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                        <button matTooltip="Assign Machine to user" (click)="assignMachine(row)" type="button" mat-icon-button>
+                            <mat-icon>add_box</mat-icon>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+    
+                <mat-header-row *matHeaderRowDef="addMachineDisplayedColumns"></mat-header-row>
+                <mat-row class="material-table-row" *matRowDef="let row; columns: addMachineDisplayedColumns;"></mat-row>
+            </mat-table>
+        </div>
+    </mat-dialog-content>
+</div>

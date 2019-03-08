@@ -1,0 +1,12 @@
+<form [formGroup]="searchEntityForm">
+    <mat-form-field class="search-form-field">
+        <input [name]="inputName" formControlName="entityName" matInput [placeholder]="placeholder" (keyup.enter)="searchEntities()">
+        <mat-icon
+            class="search-icon"
+            [matTooltip]="tooltipText"
+            (click)="searchEntities()"
+            matSuffix>
+            search
+        </mat-icon>
+    </mat-form-field>
+</form>

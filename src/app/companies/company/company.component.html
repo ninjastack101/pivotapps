@@ -1,0 +1,34 @@
+<div>
+    <mat-progress-bar color="accent" mode="indeterminate" *ngIf="!currentCompany"></mat-progress-bar>
+    <div fxLayout="row" *ngIf="currentCompany">
+        <button mat-icon-button (click)="location.back()">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div fxFlex="25"></div>
+        <div fxLayout="column">
+            <div class="loading-spinner-overlay" *ngIf="showLoadingSpinner['overlay']">
+                <mat-spinner color="accent"></mat-spinner>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <h3 fxFlex="100">Edit Company</h3>
+                <button matTooltip="Delete Company" mat-icon-button disabled="true" (click)="deleteCompany()">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+            <app-company-form
+                [company]="currentCompany"
+                [showLoadingSpinner]="showLoadingSpinner"
+                (save)="handleSave($event)">
+            </app-company-form>
+        </div>
+        <div fxFlex="25"></div>
+    </div>
+    <div *ngIf="currentCompany">
+        <app-company-user-permissions [routeParams]="routeParams" [companyId]="currentCompany.id"></app-company-user-permissions>
+        <app-company-kaseya-host [routeParams]="routeParams" [companyId]="currentCompany.id"></app-company-kaseya-host>
+        <app-company-bot-personas [routeParams]="routeParams" [companyId]="currentCompany.id"></app-company-bot-personas>
+        <app-company-api-keys [routeParams]="routeParams" [companyId]="currentCompany.id"></app-company-api-keys>
+        <app-company-variables [routeParams]="routeParams" [companyId]="currentCompany.id"></app-company-variables>
+        <app-company-public-key [routeParams]="routeParams" [companyId]="currentCompany.id"></app-company-public-key>
+    </div>
+</div>

@@ -1,0 +1,38 @@
+<div>
+    <form *ngIf="kaseyaHostForm" fxLayout="column" class="edit-form" [formGroup]="kaseyaHostForm" (ngSubmit)="updateKaseyaHostForm()">
+        <mat-form-field>
+            <input name="kaseyaHost" matInput formControlName="host" placeholder="Kaseya Host Name">
+            <mat-error *ngIf="formErrors.get('host')">
+                {{ formErrors.get('host') }}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <input name="clientId" matInput formControlName="clientId" placeholder="Kaseya Client ID">
+            <mat-error *ngIf="formErrors.get('clientId')">
+                {{ formErrors.get('clientId') }}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <input name="clientId" matInput formControlName="clientSecret" placeholder="Kaseya Client Secret">
+            <mat-error *ngIf="formErrors.get('clientSecret')">
+                {{ formErrors.get('clientSecret') }}
+            </mat-error>
+        </mat-form-field>
+
+        <button
+            [disabled]="showLoadingSpinner['saveKaseyaHost'] || !kaseyaHostForm.valid"
+            class="save-button"
+            color="primary"
+            mat-raised-button>
+            <span>Save</span>
+            <mat-progress-spinner
+                *ngIf="showLoadingSpinner['saveKaseyaHost']"
+                mode="indeterminate"
+                diameter="25"
+                class="inline-block">
+            </mat-progress-spinner>
+        </button>
+    </form>
+</div>

@@ -1,0 +1,31 @@
+<div *ngIf="botPersonaForm">
+  <form fxLayout="column" class="edit-form" [formGroup]="botPersonaForm" (ngSubmit)="updateBotPersonasForm()">
+      <mat-form-field>
+          <input type="text" formControlName="name" name="name" matInput placeholder="Bot Persona Name">
+          <mat-error *ngIf="formErrors.get('name')">
+              {{ formErrors.get('name') }}
+          </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input type="text" formControlName="profilePhoto" name="profilePhoto" matInput placeholder="Bot Persona profile photo">
+      </mat-form-field>
+      <div class="inline-slide-toggle" fxLayoutAlign="start center" fxLayout="row" fxLayoutGap="15px">
+        <mat-slide-toggle color="primary" formControlName="specialized">Specialized</mat-slide-toggle>
+      </div>
+      
+      <button
+          [disabled]="showLoadingSpinner['saveBotPersona'] || !botPersonaForm.valid"
+          class="save-button"
+          color="primary"
+          mat-raised-button>
+          <span>Save</span>
+          <mat-progress-spinner
+              *ngIf="showLoadingSpinner['saveBotPersona']"
+              mode="indeterminate"
+              diameter="25"
+              class="inline-block">
+          </mat-progress-spinner>
+      </button>
+  </form>
+</div>

@@ -1,0 +1,125 @@
+<mat-expansion-panel (opened)="initCompanyVariables()" [expanded]="routeParams.panelId === 'variables' ? true : false">
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            Variables and secrets
+        </mat-panel-title>
+        <mat-panel-description>
+            Configure Variables and secrets to use as API Keys to skills, message placeholder replacements.
+        </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <mat-progress-bar color="accent" mode="indeterminate" *ngIf="showLoadingSpinner['init']"></mat-progress-bar>
+
+    <ng-template matExpansionPanelContent>
+        <div fxLayout="row">
+            <div fxFlex="25"></div>
+            <div fxLayout="column">
+                <div class="edit-form">
+                    <h2>Manage Variables assigned to this company.</h2>
+    
+                    <app-table-filter>
+                        <app-search-box
+                            name="variableNameValue"
+                            placeholder="Begin typing here to filter results by name or value"
+                            (change)="applySearchFilter($event)">
+                        </app-search-box>
+                    </app-table-filter>
+
+                    <button class="add-new-intent-btn" (click)="addNewVariable()" mat-raised-button color="primary">
+                        Add New Variable
+                    </button>
+            
+                    <div class="table-container mat-elevation-z8">
+                        <div class="loading-spinner-overlay" *ngIf="showLoadingSpinner['init'] || showLoadingSpinner['overlay'] || showLoadingSpinner['saveVariables']">
+                            <mat-spinner color="accent"></mat-spinner>
+                        </div>
+                        <mat-table #table [dataSource]="dataSource" matSort matSortActive="name" matSortDirection="asc">
+                            <ng-container matColumnDef="name">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
+                                <mat-cell *matCellDef="let element">
+                                    <mat-form-field fxFlex="90">
+                                        <input
+                                            title=""
+                                            matTooltip="Variable names are case-sensitive and may include any combination of letters and numbers. Special characters are not allowed."
+                                            matTooltipClass="tooltip-expanded"
+                                            required
+                                            [disabled]="element.isExistingVariable"
+                                            matInput
+                                            name="variableName"
+                                            [(ngModel)]="element.name">
+                                    </mat-form-field>
+                                </mat-cell>
+                            </ng-container>
+
+                            <ng-container matColumnDef="value">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header>Value</mat-header-cell>
+                                <mat-cell *matCellDef="let element; let i = index;">
+                                    <mat-form-field fxFlex="90" [matTooltip]="element.isExistingVariable && element.isSecret ? 'Encrypted Secret Value': ''">
+                                        <input
+                                            required
+                                            [disabled]="element.isExistingVariable"
+                                            matInput
+                                            name="variableValue"
+                                            [(ngModel)]="element.value">
+                                    </mat-form-field>
+                                </mat-cell>
+                            </ng-container>
+
+                            <ng-container matColumnDef="isSecret">
+                                <mat-header-cell fxFlex="10" *matHeaderCellDef>Secret</mat-header-cell>
+                                <mat-cell fxFlex="10" class="mat-column-select" *matCellDef="let element">
+                                    <mat-checkbox
+                                        color="primary"
+                                        (click)="$event.stopPropagation()"
+                                        (change)="element.isSecret = !element.isSecret"
+                                        [checked]="element.isSecret"
+                                        [disabled]="element.isExistingVariable">
+                                    </mat-checkbox>
+                                </mat-cell>
+                            </ng-container>
+
+                            <ng-container matColumnDef="delete">
+                                <mat-header-cell fxFlex="10" *matHeaderCellDef>Delete</mat-header-cell>
+                                <mat-cell fxFlex="10" class="mat-column-select" *matCellDef="let element">
+                                    <button
+                                        matTooltipClass="tooltip-expanded"
+                                        matTooltip="To edit an existing variable, delete the variable and create a new one with same name."
+                                        mat-icon-button (click)="deleteVariable(element)">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </mat-cell>
+                            </ng-container>
+            
+                            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                            <mat-row class="material-table-row" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                        </mat-table>
+            
+                        <mat-paginator
+                            #paginator
+                            [pageSize]="paginationOptions.pageSize"
+                            [pageSizeOptions]="paginationOptions.pageSizeOptions"
+                            [showFirstLastButtons]="true">
+                        </mat-paginator>
+                    </div>
+            
+                    <div fxLayout="row">
+                        <button
+                            [disabled]="showLoadingSpinner['saveVariables']"
+                            color="primary"
+                            (click)="saveVariables()"
+                            mat-raised-button>
+                            <span>Save</span>
+                            <mat-progress-spinner
+                                *ngIf="showLoadingSpinner['saveVariables']"
+                                mode="indeterminate"
+                                diameter="25"
+                                class="inline-block">
+                            </mat-progress-spinner>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div fxFlex="25"></div>
+        </div>
+    </ng-template>
+</mat-expansion-panel>

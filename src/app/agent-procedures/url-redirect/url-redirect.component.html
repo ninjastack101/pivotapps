@@ -1,0 +1,47 @@
+<div>
+    <mat-progress-bar color="accent" mode="indeterminate" *ngIf="!urlRedirect"></mat-progress-bar>
+    <div fxLayout="row" *ngIf="urlRedirect">
+        <button mat-icon-button (click)="location.back()">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div fxFlex="25"></div>
+        <div fxLayout="column">
+            <div class="loading-spinner-overlay" *ngIf="showLoadingSpinner['overlay']">
+                <mat-spinner color="accent"></mat-spinner>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <h3 fxFlex="100">Edit URL Redirect</h3>
+                <button matTooltip="Delete URL Redirect" mat-icon-button (click)="deleteUrlRedirect()">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+            <app-agent-procedures-url-redirect-form
+                [urlRedirect]="urlRedirect"
+                [showLoadingSpinner]="showLoadingSpinner"
+                (save)="updateUrlRedirectForm($event)">
+            </app-agent-procedures-url-redirect-form>
+            <app-last-modified 
+                [skill]="urlRedirect">
+            </app-last-modified>
+        </div>
+        <div fxFlex="25"></div>
+    </div>
+    <div *ngIf="urlRedirect">
+        <app-agent-procedures-messages
+            intent="urlRedirects"
+            [skillId]="urlRedirect.id"
+            [messageCategories]="messageCategories"
+            [specializedBotPersonaId]="urlRedirect.specializedBotPersonaId">
+        </app-agent-procedures-messages>
+        <app-agent-procedures-permissions
+            skill="Business Skill (Share Link)">
+        </app-agent-procedures-permissions>
+        <app-agent-procedures-luis
+            [skillId]="urlRedirect.id"
+            [skillName]="urlRedirect.name">
+        </app-agent-procedures-luis>
+        <app-ticket-integration
+            [skillId]="urlRedirect.id">
+        </app-ticket-integration>
+    </div>
+</div>

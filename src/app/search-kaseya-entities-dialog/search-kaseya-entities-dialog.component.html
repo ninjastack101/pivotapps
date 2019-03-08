@@ -1,0 +1,46 @@
+<div class="dialog-container">
+    <h2 mat-dialog-title>{{ dialogData.title }}</h2>
+    <mat-dialog-content>
+        <div class="loading-spinner-overlay" *ngIf="showLoadingSpinner['searchEntities']">
+            <mat-spinner color="accent"></mat-spinner>
+        </div>
+        <form fxLayout="column" [formGroup]="searchEntitiesForm">
+            <app-search-kaseya-entities
+                [inputName]="dialogData.inputName"
+                [placeholder]="dialogData.placeholder"
+                [tooltipText]="dialogData.tooltipText"
+                [entityType]="dialogData.entityType"
+                (loading)="handleLoadingEvent($event)"
+                (searchResult)="handleSearchResults($event)">
+            </app-search-kaseya-entities>
+            <p *ngIf="message && !showLoadingSpinner['searchEntities']">{{ message }}</p>
+            <mat-radio-group *ngIf="pagedEntities.length" class="radio-group-container" fxLayout="column" fxLayoutGap="10px" formControlName="lookupKey">
+                <mat-radio-button class="procedure-radio" *ngFor="let entity of pagedEntities" [value]="entity.lookupKey" [title]="entity?.Description">
+                    <div fxLayout="column" fxLayoutGap="10px">
+                        <span class="kaseya-primary-display">{{ entity[dialogData.primaryDisplayKey] }}</span>
+                        <span class="kaseya-secondary-display">{{ entity[dialogData.secondaryDisplayKey] }}</span>
+                    </div>                    
+                </mat-radio-button>
+            </mat-radio-group>
+        </form>
+    </mat-dialog-content>
+    <mat-dialog-actions fxLayout="column">
+        <mat-paginator
+            #paginator
+            [length]="pageLength"
+            [pageSize]="paginationOptions.pageSize"
+            [pageSizeOptions]="paginationOptions.pageSizeOptions"
+            [showFirstLastButtons]="true"
+            (page)="updatePage($event)">
+        </mat-paginator>
+        <div fxLayout="row">
+            <button
+                [disabled]="showLoadingSpinner['searchEntities'] || !searchEntitiesForm.valid"
+                (click)="closeDialogWithResult()"
+                mat-raised-button>
+                Select
+            </button>
+            <button mat-raised-button mat-dialog-close>Close</button>
+        </div>
+    </mat-dialog-actions>
+</div>

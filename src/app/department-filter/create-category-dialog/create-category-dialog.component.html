@@ -1,0 +1,41 @@
+<div *ngIf="inputForm">
+    <h2 mat-dialog-title>Create New Category</h2>
+    <mat-dialog-content class="dialog-container">
+        <form [formGroup]="inputForm">
+            <mat-form-field class="material-select-inline" class="width-100">
+                <mat-select placeholder="Company" formControlName="companyId">
+                    <mat-option *ngFor="let company of companies" [value]="company.id">
+                        <span>{{ company.name }}</span>
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field class="width-100">
+                <input type="text" disabled="true" name="departmentName" matInput placeholder="Department" [value]="department.name">
+            </mat-form-field>
+
+            <mat-form-field class="width-100">
+                <input type="text" formControlName="name" name="categoryName" matInput placeholder="Category Name">
+                <mat-error *ngIf="formErrors.get('name')">
+                    {{ formErrors.get('name') }}
+                </mat-error>
+            </mat-form-field>
+        </form>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button
+            [disabled]="showLoadingSpinner['createCategory'] || !inputForm.valid"
+            color="primary"
+            (click)="createCategory()"
+            mat-button>
+            <span>Save</span>
+            <mat-progress-spinner
+                *ngIf="showLoadingSpinner['createCategory']"
+                mode="indeterminate"
+                diameter="25"
+                class="inline-block">
+            </mat-progress-spinner>
+        </button>
+        <button mat-button [mat-dialog-close] cdkFocusInitial>Close</button>
+    </mat-dialog-actions>
+</div>

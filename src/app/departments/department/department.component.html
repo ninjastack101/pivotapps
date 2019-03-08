@@ -1,0 +1,65 @@
+<div>
+    <mat-progress-bar color="accent" mode="indeterminate" *ngIf="!currentDepartment"></mat-progress-bar>
+    <div fxLayout="row" *ngIf="currentDepartment">
+        <button mat-icon-button (click)="location.back()">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div fxFlex="25"></div>
+        <div fxLayout="column">
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <h3 fxFlex="100">Edit Department</h3>
+                <button matTooltip="Delete Department" mat-icon-button (click)="deleteDepartment()">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+
+            <div class="loading-spinner-overlay" *ngIf="showLoadingSpinner['overlay']">
+                <mat-spinner color="accent"></mat-spinner>
+            </div>
+
+            <app-department-form
+                [department]="currentDepartment"
+                [showLoadingSpinner]="showLoadingSpinner"
+                (save)="handleSave($event)">
+            </app-department-form>
+        </div>
+        <div fxFlex="25"></div>
+    </div>
+    <div *ngIf="currentDepartment">
+        <mat-tab-group dynamicHeight="true" (selectedTabChange)="tabChangeService.updateTabChangeEvent($event)">
+            <mat-tab label="Assigned Companies">
+                <ng-template matTabContent>
+                    <div fxLayout="row">
+                        <div fxFlex="15"></div>
+                        <div fxLayout="column" class="tab-component-container">
+                            <h3>Please assign companies that are allowed to access this department.</h3>
+
+                            <app-company-settings
+                                [apiUrl]="departmentSettingsApiUrl"
+                                [confirmationDialogData]="departmentSettingsConfirmationDialogData"
+                                [displayedColumns]="departmentSettingsDisplayedColumns">
+                            </app-company-settings>
+                        </div>
+                    </div>
+                </ng-template>
+            </mat-tab>
+            <mat-tab label="Assigned Users">
+                <ng-template matTabContent>
+                    <div fxLayout="row">
+                        <div fxFlex="15"></div>
+                        <div fxLayout="column" class="tab-component-container">
+                            <!-- <h3>Please assign users that are allowed to access this department.</h3>
+
+                            <app-department-users
+                                [department]="currentDepartment">
+                            </app-department-users> -->
+                            <p>
+                                To assign users to this department, please visit Companies, expand the Permissions panel, and select the <strong>Assign Users to Departments</strong> tab
+                            </p>
+                        </div>
+                    </div>
+                </ng-template>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>

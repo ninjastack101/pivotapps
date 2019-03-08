@@ -1,0 +1,11 @@
+<div fxLayout="row">
+    <div fxFlex="25"></div>
+    <div fxLayout="column">
+        <h3>Create New Skill to Share URL</h3>
+        <app-agent-procedures-url-redirect-form
+            [showLoadingSpinner]="showLoadingSpinner"
+            (save)="createUrlRedirect($event)">
+        </app-agent-procedures-url-redirect-form>
+    </div>
+    <div fxFlex="25"></div>
+</div>

@@ -1,0 +1,129 @@
+<div>
+    <form fxLayout="column" class="edit-form" [formGroup]="kaseyaSkillForm" (ngSubmit)="updateKaseyaSkillForm()">
+        <mat-form-field>
+            <input name="agentProcedureName" matInput formControlName="name" placeholder="Skill Name">
+            <mat-error *ngIf="formErrors.get('name')">
+                {{ formErrors.get('name') }}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <input matTooltipClass="tooltip-expanded" matTooltip="Use the search icon and select a Kaseya Agent Procedure" readonly name="kaseyaApPathName" matInput formControlName="kaseyaApPathName" placeholder="Kaseya Agent Procedure">
+            <mat-icon class="search-icon" matTooltip="Search Procedure ID by name" (click)="searchProcedures()" matSuffix>search</mat-icon>
+            <mat-error *ngIf="formErrors.get('kaseyaApPathName')">
+                {{ formErrors.get('kaseyaApPathName') }}
+            </mat-error>
+        </mat-form-field>
+
+        <app-department-filter
+            [fxLayoutGap]="'10px'"
+            [currentSubCategoryId]="kaseyaSkill.departmentSubCategoryId"
+            (emptySelection)="clearSubCategory()"
+            (selectionChange)="applyDepartmentFilter($event)">
+        </app-department-filter>
+
+        <mat-form-field>
+            <textarea name="confirmationMessage" matInput formControlName="confirmationMessage" placeholder="Confirmation Message to Send Before Receiving Results from Kaseya"></textarea>
+            <mat-error *ngIf="formErrors.get('confirmationMessage')">
+                {{ formErrors.get('confirmationMessage') }}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <textarea
+                name="confirmationMessageAdaptiveCard"
+                matInput
+                formControlName="confirmationMessageAdaptiveCard"
+                placeholder="Adaptive Card Confirmation Message to Send Before Receiving Results from Kaseya"
+                cdkTextareaAutosize
+                #autosize="cdkTextareaAutosize">
+            </textarea>
+            <mat-error *ngIf="formErrors.get('confirmationMessageAdaptiveCard')">
+                {{ formErrors.get('confirmationMessageAdaptiveCard') }}
+            </mat-error>
+        </mat-form-field>
+
+        <div>
+            <mat-slide-toggle color="primary" formControlName="skipMachinePrompt">Skip Machine Prompt</mat-slide-toggle>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="space-evenly center" *ngIf="kaseyaSkillForm.get('skipMachinePrompt').value" [@fadeInOut] class="alwaysOverrideMachineName">
+            <mat-form-field>
+                <input matTooltipClass="tooltip-expanded" matTooltip="Use the search icon and select a Kaseya Agent" readonly name="alwaysOverrideMachineName" matInput formControlName="alwaysOverrideMachineName" placeholder="Always Override Machine Name">
+                <button
+                    type="button"
+                    class="mat-icon-button-suffix"
+                    mat-icon-button
+                    matSuffix
+                    matTooltip="Clear selection"
+                    (click)="clearOverrideMachineSelection()">
+                        <mat-icon>clear</mat-icon>
+                </button>
+                <button
+                    type="button"
+                    class="mat-icon-button-suffix"
+                    mat-icon-button
+                    matSuffix
+                    matTooltip="Search Machine by name"
+                    (click)="searchMachines()">
+                        <mat-icon>search</mat-icon>
+                </button>
+                <mat-error *ngIf="formErrors.get('alwaysOverrideMachineName')">
+                    {{ formErrors.get('alwaysOverrideMachineName') }}
+                </mat-error>
+            </mat-form-field>
+
+            <span>OR</span>
+    
+            <mat-form-field>
+                <input formControlName="alwaysOverrideMachineCompanyVariable" matTooltipClass="tooltip-expanded" matTooltip="Enter an existing company variable to use as Always Override Machine. The variable should contain a value matching the Machine ID field of the Override Machine" name="companyVariableName" matInput placeholder="Company Variable">
+                <mat-error *ngIf="formErrors.get('alwaysOverrideMachineCompanyVariable')">
+                    {{ formErrors.get('alwaysOverrideMachineCompanyVariable') }}
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <div class="inline-slide-toggle" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px">
+            <app-ap-specialized-bot-persona-filter
+                [specializedBotPersonas]="specializedBotPersonas"
+                [currentSpecializedBotPersonaId]="kaseyaSkill.specializedBotPersonaId" 
+                (selectionChange)="saveSpecializedBotPersona($event)">
+            </app-ap-specialized-bot-persona-filter>
+        </div>
+
+        <div class="inline-slide-toggle" fxLayoutGap="15px">
+            <mat-slide-toggle color="primary" formControlName="skipSchedulePrompt">Skip Schedule Prompt</mat-slide-toggle>
+            <mat-slide-toggle color="primary" formControlName="skipConfirmationPrompt">Skip Confirmation Prompt</mat-slide-toggle>
+            <mat-slide-toggle matTooltipClass="tooltip-expanded" matTooltip="Hide this procedure when using menu button navigation to prevent very large menus from scrolling in PivBot. Users can still access the procedure via LUIS." color="primary" formControlName="hiddenFromMenu">Hidden From Menu</mat-slide-toggle>
+            <mat-slide-toggle matTooltipClass="tooltip-expanded" matTooltip="" color="primary" formControlName="expectExecutionResult">Expect Execution Result</mat-slide-toggle>
+            <mat-slide-toggle matTooltipClass="tooltip-expanded" matTooltip="" color="primary" formControlName="requiresApproval">Requires Approval</mat-slide-toggle>
+            <mat-slide-toggle matTooltipClass="tooltip-expanded" matTooltip="" color="primary" formControlName="resellerManaged">Reseller Managed</mat-slide-toggle>
+        </div>
+       
+        <div fxLayout="row" fxLayoutGap="10px">
+            <button
+                [disabled]="showLoadingSpinner['saveKaseyaSkill'] || showLoadingSpinner['loading'] || !kaseyaSkillForm.valid || !formDataChangeDetected"
+                class="save-button"
+                color="primary"
+                mat-raised-button>
+                <span>Save</span>
+                <mat-progress-spinner
+                    *ngIf="showLoadingSpinner['saveKaseyaSkill'] || showLoadingSpinner['loading']"
+                    mode="indeterminate"
+                    diameter="25"
+                    class="inline-block">
+                </mat-progress-spinner>
+            </button>
+        
+            <button
+                *ngIf="!showLoadingSpinner['saveKaseyaSkill'] && !showLoadingSpinner['loading'] && formDataChangeDetected"
+                type="button"
+                class="save-button"
+                color="primary"
+                (click)="cancelChanges()"
+                mat-raised-button>
+                <span>Cancel</span>
+            </button>
+        </div>
+    </form>
+</div>

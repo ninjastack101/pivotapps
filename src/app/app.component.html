@@ -1,0 +1,37 @@
+<mat-sidenav-container hasBackdrop="true" fullscreen>
+  <mat-sidenav fxLayout="column" position="end" #sidenav mode="over">
+    <app-side-menu (toggle)="sidenav.toggle()" (close)="sidenav.close()"></app-side-menu>
+  </mat-sidenav>
+  <mat-sidenav #mobilesidenav fxLayout="column" fxHide.lt-md="false">
+      <a cdkInitialFocus href="javascript:;" (click)="mobilesidenav.toggle()">
+          <img class="sidenav-logo brand-logo-image" src="assets/images/IT-Support-bot-logo.png" alt="">
+      </a>
+      <div fxFlex="2"></div>
+      <app-navbar-links class="mobile-sidenav" *ngIf="authService.isAuthenticated" (toggle)="mobilesidenav.toggle()" (click)="mobilesidenav.close()"></app-navbar-links>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar fxLayout="row" style="background-color: lightgrey;">
+       <div class="mobile_logo">
+          <div fxShow="true" fxHide.gt-sm="true">
+              <button mat-icon-button (click)="mobilesidenav.toggle()">
+                <mat-icon>menu</mat-icon>
+              </button>
+          </div>
+          <a routerLink="/dashboard" class="site_logo vg">
+              <img class="brand-logo-image" src="assets/images/IT-Support-bot-logo.png" alt="">
+          </a>
+      </div>
+      <div fxFlex="50" fxShow="true" fxHide.lt-md="true">
+          <app-navbar-links *ngIf="authService.isAuthenticated"></app-navbar-links>
+      </div>
+      <div fxFlex="20" fxShow="true" fxHide.lt-md="true">
+          <app-company-filter *ngIf="authService.isAuthenticated"></app-company-filter>
+      </div>
+      <app-navbar-utils (toggleSideNavbar)="sidenav.toggle()"></app-navbar-utils>
+    </mat-toolbar>
+     
+    <mat-progress-bar color="accent" mode="indeterminate" *ngIf="!renderRouterOutlet"></mat-progress-bar>
+    <app-snackbar></app-snackbar>
+    <router-outlet *ngIf="renderRouterOutlet"></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

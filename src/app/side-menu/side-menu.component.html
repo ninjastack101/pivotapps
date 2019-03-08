@@ -1,0 +1,9 @@
+<div>
+    <img class="sidenav-logo brand-logo-image" src="assets/images/IT-Support-bot-logo.png" alt="">
+    <mat-nav-list>
+        <mat-list-item *ngFor="let entity of entities" (click)="handleEntity(entity)" class="sidenav-list">
+            <mat-icon matListIcon>{{ entity.icon }}</mat-icon>
+            {{ entity.name }}
+        </mat-list-item>
+    </mat-nav-list>
+</div>

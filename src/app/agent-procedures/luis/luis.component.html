@@ -1,0 +1,189 @@
+<mat-expansion-panel (opened)="buildLuisForm()">
+    <mat-expansion-panel-header>
+        <mat-panel-title>Natural Language</mat-panel-title>
+        <mat-panel-description>Configure language understanding settings</mat-panel-description>
+    </mat-expansion-panel-header>
+    <div fxLayout="row">
+        <div fxFlex="25"></div>
+        <div fxLayout="column">
+            <mat-accordion>
+                <mat-expansion-panel expanded="true" class="utterance-form-container">
+                    <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Request Phrases
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        Manage Natural Language request phrases
+                    </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div class="loading-spinner-overlay" *ngIf="showLoadingSpinner['loading'] || showLoadingSpinner['init']">
+                        <mat-spinner color="accent"></mat-spinner>
+                    </div>
+                    <div *ngIf="luisUtterancesForm">
+                        <form fxLayout="column" [formGroup]="luisUtterancesForm">
+                            <h2>Request Phrases:</h2>
+        
+                            <form [formGroup]="newLuisUtteranceForm">
+                                <mat-form-field class="full-width">
+                                    <input
+                                        (keyup.enter)="createNewUtterance()"
+                                        name="utteranceName"
+                                        formControlName="utterance"
+                                        matInput
+                                        placeholder="Type examples of what a user might say and hit Enter">
+                                    <mat-icon
+                                        class="search-icon"
+                                        matTooltip="Create New Utterance"
+                                        (click)="createNewUtterance()"
+                                        matSuffix>
+                                        send
+                                    </mat-icon>
+                                </mat-form-field>
+                            </form>
+            
+                            <div formArrayName="utterances" *ngFor="let utterance of luisUtterancesForm.get('utterances').controls; let i = index;">
+                                <div [formGroupName]="i" fxLayout="row" fxLayoutGap="25px">
+                                    <mat-form-field class="full-width">
+                                        <input
+                                            matInput
+                                            name="utteranceText"
+                                            type="text"
+                                            formControlName="text">
+                                    </mat-form-field>
+            
+                                    <button matTooltip="Delete Utterance" mat-icon-button (click)="deleteUtterance(i)">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+            
+                            <div fxLayout="column">
+                                <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="start center">
+                                    <button
+                                        (click)="getLuisAppStatus()"
+                                        [disabled]="showLoadingSpinner['getLuisAppStatus']"
+                                        class="save-button-min-width"
+                                        mat-raised-button>
+                                        <span>Get Training Status</span>
+                                        <mat-progress-spinner
+                                            *ngIf="showLoadingSpinner['getLuisAppStatus']"
+                                            mode="indeterminate"
+                                            diameter="25"
+                                            class="inline-block">
+                                        </mat-progress-spinner>
+                                    </button>
+                                    <span>
+                                        {{ trainingStatusMap.get(luisIntent.appStatus[0].trainingStatus) }}
+                                    </span>
+                                </div>
+        
+                                <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="start center">
+                                    <button
+                                        (click)="trainLuisApp()"
+                                        [disabled]="showLoadingSpinner['trainLuisApp']"
+                                        [color]="luisIntent.appStatus[0].trainingStatus === 'NeedsTraining' ? 'warn' : 'accent'"
+                                        class="save-button-min-width"
+                                        mat-raised-button>
+                                        <span>Train</span>
+                                        <mat-progress-spinner
+                                            *ngIf="showLoadingSpinner['trainLuisApp']"
+                                            mode="indeterminate"
+                                            diameter="25"
+                                            class="inline-block">
+                                        </mat-progress-spinner>
+                                    </button>
+
+                                    <span *ngIf="luisIntent.appStatus[0].lastTrainedDateTime" [title]="luisIntent.appStatus[0].lastTrainedDateTime">
+                                        Last trained on {{ luisIntent.appStatus[0].lastTrainedDateTime | date: 'medium' }}
+                                        ({{ luisIntent.appStatus[0].lastTrainedDateTime | amTimeAgo }})
+                                    </span>
+                                    <span *ngIf="!luisIntent.appStatus[0].lastTrainedDateTime">
+                                        Last trained on unavailable
+                                    </span>
+                                </div>
+        
+                                <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="start center">
+                                    <button
+                                        (click)="publishLuisApp()"
+                                        [disabled]="showLoadingSpinner['publishLuisApp'] || luisIntent.appStatus[0].trainingStatus !== 'Trained'"
+                                        color="primary"
+                                        class="save-button-min-width"
+                                        mat-raised-button>
+                                        <span>Publish to LUIS</span>
+                                        <mat-progress-spinner
+                                            *ngIf="showLoadingSpinner['publishLuisApp']"
+                                            mode="indeterminate"
+                                            diameter="25"
+                                            class="inline-block">
+                                        </mat-progress-spinner>
+                                    </button>
+
+                                    <span [title]="luisIntent.appStatus[0].lastPublishedDateTime">
+                                        Last published on {{ luisIntent.appStatus[0].lastPublishedDateTime | date: 'medium' }}
+                                        ({{ luisIntent.appStatus[0].lastPublishedDateTime | amTimeAgo }})
+                                    </span>
+                                    <span *ngIf="!luisIntent.appStatus[0].lastPublishedDateTime">
+                                        Last published on unavailable
+                                    </span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </mat-expansion-panel>
+                <mat-expansion-panel class="utterance-form-container">
+                    <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Advanced Settings
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        Manage LUIS app settings.
+                    </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div *ngIf="luisForm">
+                        <form [formGroup]="luisForm">
+                            <mat-form-field class="full-width">
+                                <input formControlName="luisUrl" name="luisUrl" matInput placeholder="Enter complete LUIS intent URL">
+                            </mat-form-field>
+                            <span fxFlexAlign="center">Or</span>
+                            <div fxLayout="row">
+                                <mat-form-field fxFlex>
+                                    <input formControlName="appId" matInput name="appId" type="text" [title]="luisForm.get('appId').value" placeholder="LUIS App ID">
+                                    <span matPrefix>{{ luisUrlTemplate[0] }}/</span>
+                                    <span matSuffix> /{{ luisUrlTemplate[2] }}/ </span>
+                                </mat-form-field>
+                    
+                                <mat-form-field fxFlex="10">
+                                    <input formControlName="appVersion" matInput name="appVersion" [title]="luisForm.get('appVersion').value" type="text" placeholder="LUIS App Version">
+                                </mat-form-field>
+                    
+                                <mat-form-field fxFlex>
+                                    <span matPrefix> /{{ luisUrlTemplate[4] }}/ </span>
+                                    <input formControlName="intentId" matInput name="intentId" [title]="luisForm.get('intentId').value" type="text" placeholder="LUIS Intent ID">
+                                </mat-form-field>
+                
+                                <a fxFlexAlign="center" target="_blank" [href]="luisForm.get('luisUrl').value || 'https://luis.ai'">
+                                    <mat-icon>open_in_new</mat-icon>
+                                </a>
+                            </div>
+                
+                            <button
+                                [disabled]="showLoadingSpinner['saveLuisForm'] || !luisForm.valid"
+                                class="save-button"
+                                (click)="saveLuisForm()"
+                                mat-raised-button>
+                                <span>Save</span>
+                                <mat-progress-spinner
+                                    *ngIf="showLoadingSpinner['saveLuisForm']"
+                                    mode="indeterminate"
+                                    diameter="25"
+                                    class="inline-block">
+                                </mat-progress-spinner>
+                            </button>
+                        </form>
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+        <div fxFlex="25"></div>
+    </div>
+</mat-expansion-panel>

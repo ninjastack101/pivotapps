@@ -1,0 +1,46 @@
+<mat-expansion-panel [expanded]="routeParams.panelId === 'permissions' ? true : false">
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            Permissions
+        </mat-panel-title>
+        <mat-panel-description>
+            Manage permissions assigned to users
+        </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <ng-template matExpansionPanelContent>
+        <mat-tab-group dynamicHeight="true" [selectedIndex]="selectedIndex">
+            <mat-tab label="Users">
+                <ng-template matTabContent>
+                    <app-company-add-users
+                        class="tab-component"
+                        [companyId]="companyId">
+                    </app-company-add-users>
+                </ng-template>
+            </mat-tab>
+            <mat-tab label="Assign Users to Departments">
+                <ng-template matTabContent>
+                    <app-company-add-user-departments
+                        class="tab-component"
+                        [companyId]="companyId">
+                    </app-company-add-user-departments>
+                </ng-template>
+            </mat-tab>
+            <mat-tab label="Kaseya Machine Group Mappings">
+                <ng-template matTabContent>
+                    <app-company-kaseya-machinegroup-mappings
+                        class="tab-component"
+                        [companyId]="companyId">
+                    </app-company-kaseya-machinegroup-mappings>
+                </ng-template>
+            </mat-tab>
+            <mat-tab *ngIf="showResellerAccountTab" label="Reseller Accounts">
+                <ng-template matTabContent>
+                    <app-company-reseller-accounts
+                        class="tab-component">
+                    </app-company-reseller-accounts>
+                </ng-template>
+            </mat-tab>
+        </mat-tab-group>
+    </ng-template>
+</mat-expansion-panel>

@@ -1,0 +1,108 @@
+<mat-expansion-panel (opened)="buildMessagesForm()">
+    <mat-expansion-panel-header>
+        <mat-panel-title>Messages</mat-panel-title>
+        <mat-panel-description>Customise messages by Bot Persona</mat-panel-description>
+    </mat-expansion-panel-header>
+    <mat-progress-bar color="accent" mode="indeterminate" *ngIf="showLoadingSpinner['initMessagesSection']"></mat-progress-bar>
+    <div *ngIf="messagesForm" fxLayout="row">
+        <div fxFlex="5"></div>
+        <form fxFlex class="messages-form" [formGroup]="messagesForm">
+            <div formArrayName="messages" *ngFor="let personaMessage of messagesForm.get('messages').controls; let i = index;">
+                <div [formGroupName]="i" class="message-container">
+                    <mat-form-field class="material-select-inline">
+                        <mat-select placeholder="Bot Persona" required formControlName="botPersonaId">
+                            <mat-option *ngFor="let persona of botPersonasFiltered" [value]="persona.id">
+                                <img class="select-avatar" [src]="persona.profilePhoto"/>
+                                <span>{{ persona.name }}</span>
+                                <i *ngIf="persona.specialized">( Specialized )</i>
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field class="material-select-inline" *ngIf="messageCategories?.length">
+                        <mat-select placeholder="Message Category" required formControlName="messageCategory" (selectionChange)="handleMessageCategoryChange($event)">
+                            <mat-option [title]="category.name" *ngFor="let category of messageCategories" [value]="category.id">{{ category.name }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field class="material-select-inline">
+                        <mat-select placeholder="Message Type" required formControlName="messageType">
+                            <mat-option *ngFor="let messageType of messageTypes.get(personaMessage.get('messageCategory').value)" [value]="messageType.id">{{ messageType.name }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field class="material-input-inline">
+                        <input
+                            matTooltipClass="tooltip-expanded"
+                            matTooltip="The duration in milliseconds to show typing indicator"
+                            matInput
+                            name="typingDuration"
+                            type="number"
+                            formControlName="typingDuration"
+                            placeholder="Typing Duration (ms)">
+                    </mat-form-field>
+
+                    <mat-form-field class="material-input-inline">
+                        <input
+                            matTooltipClass="tooltip-expanded"
+                            matTooltip="The duration in milliseconds to delay sending next message after typing indicator is complete. This is mutually exclusive with Typing Duration. The post typing delay is applied only after the typing duration value is complete."
+                            matInput
+                            name="postTypingDelay"
+                            type="number"
+                            formControlName="postTypingDelay"
+                            placeholder="Post Typing Delay (ms)">
+                    </mat-form-field>
+                    
+                    <mat-form-field class="material-textarea-inline">
+                        <textarea
+                            cdkTextareaAutosize
+                            #autosize="cdkTextareaAutosize"
+                            matInput
+                            formControlName="text"
+                            placeholder="Message">
+                        </textarea>
+                    </mat-form-field>
+
+                    <mat-form-field class="material-textarea-inline">
+                        <textarea
+                            cdkTextareaAutosize
+                            #autosize="cdkTextareaAutosize"
+                            matInput
+                            formControlName="adaptiveCardJson"
+                            placeholder="Adaptive Card JSON">
+                        </textarea>
+                        <mat-error 
+                            *ngIf="formErrors.get('adaptiveCardJson')">
+                            {{ formErrors.get('adaptiveCardJson') }}
+                        </mat-error>
+                    </mat-form-field>
+
+                    <button mat-icon-button (click)="removeMessageInput(i)">
+                        <mat-icon>close</mat-icon>
+                    </button>
+
+                    <div class="loading-spinner-overlay" *ngIf="showDeleteMessageLoadingSpinner[i]">
+                        <mat-spinner color="accent"></mat-spinner>
+                    </div>
+                </div>
+            </div>
+
+            <div fxLayout="row" fxLayoutGap="10px">
+                <button
+                    [disabled]="showLoadingSpinner['saveMessages'] || !messagesForm.valid"
+                    class="save-button"
+                    (click)="saveMessagesForm()"
+                    mat-raised-button>
+                    <span>Save</span>
+                    <mat-progress-spinner
+                        *ngIf="showLoadingSpinner['saveMessages']"
+                        mode="indeterminate"
+                        diameter="25"
+                        class="inline-block">
+                    </mat-progress-spinner>
+                </button>
+                <button class="save-button-min-width" mat-raised-button (click)="addNewMessageInput()">Add another</button>
+            </div>
+        </form>
+    </div>
+</mat-expansion-panel>

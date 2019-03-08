@@ -1,0 +1,7 @@
+<div *ngIf="authService.user" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+    <span fxHide.xs fxFlexAlign="center" class="user-nickname">{{ authService.user.first_name }}</span>
+    <img class="image-avatar" width="32" height="32" [src]="authService.user.extension_imageUrl" [alt]="authService.user.first_name">
+    <button mat-icon-button (click)="requestSideNavbar()">
+        <mat-icon>more_vert</mat-icon>
+    </button>
+</div>

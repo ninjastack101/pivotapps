@@ -1,0 +1,40 @@
+<mat-expansion-panel>
+    <mat-expansion-panel-header>
+        <mat-panel-title>Permissions</mat-panel-title>
+        <mat-panel-description>Allow access to current {{ skill }}</mat-panel-description>
+    </mat-expansion-panel-header>
+    <ng-template matExpansionPanelContent>
+        <h3>Permissions Are Inherited Only From Sub-Categories:</h3>
+        <ul>
+            <li>
+                Please note that when creating a new category or sub-category, you will need to explicitly define permissions at every level for the company you are granting access
+            </li>
+
+            <li>
+                Permissions are not inherited by sub-categories from categories, or by categories from departments.
+            </li>
+
+            <li>
+                Permissions are inherited by skills from the sub-category.
+            </li>
+        </ul>
+            
+        <h3>
+            How to Assign Permissions for This Skill:
+        </h3>
+
+        <ol>
+            <li>
+                <b>Assign permissions for a company to the department, category, and sub-category.</b> Use the vertical ellipses button and choose <b>Manage Settings</b> to confirm the company has been associated at all three levels selected above: Department, Category, and Sub-Category. Company permission must be assigned at all three levels to allow users to access this skill.
+            </li>
+
+            <li>
+                <b>Associate users with the company.</b> From the Companies tab, expand the Permissions panel, and select the Users tab. Confirm that intended users of this skill have been associated with the company.
+            </li>
+
+            <li>
+                <b>Associate users with the department.</b> From the Companies tab, expand the Permissions panel, and select the User Departments tab. Confirm that intended users of this skill have been associated with the selected department.
+            </li>
+        </ol>
+    </ng-template>
+</mat-expansion-panel>

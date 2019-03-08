@@ -1,0 +1,40 @@
+<div *ngIf="departmentForm">
+    <form fxLayout="column" class="edit-form" [formGroup]="departmentForm" (ngSubmit)="updateDepartmentForm()">
+        <mat-form-field class="material-select-inline" *ngIf="!department.id">
+            <mat-select placeholder="Company" formControlName="companyId">
+                <mat-option *ngFor="let company of companies" [value]="company.id">
+                    <span>{{ company.name }}</span>
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+            <input type="text" formControlName="name" name="departmentName" matInput placeholder="Department Name">
+            <mat-error *ngIf="formErrors.get('name')">
+                {{ formErrors.get('name') }}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field *ngIf="!department.id">
+            <input type="text" formControlName="emailAddress" name="emailAddress" matInput placeholder="Department Email Address" matTooltip="Email address used to route the LUIS requests as tickets to.">
+            <mat-error *ngIf="formErrors.get('emailAddress')">
+                {{ formErrors.get('emailAddress') }}
+            </mat-error>
+        </mat-form-field>
+
+
+        <button
+            [disabled]="showLoadingSpinner['saveDepartments'] || !departmentForm.valid"
+            class="save-button"
+            color="primary"
+            mat-raised-button>
+            <span>Save</span>
+            <mat-progress-spinner
+                *ngIf="showLoadingSpinner['saveDepartments']"
+                mode="indeterminate"
+                diameter="25"
+                class="inline-block">
+            </mat-progress-spinner>
+        </button>
+    </form>
+</div>

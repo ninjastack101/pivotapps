@@ -1,0 +1,61 @@
+<mat-expansion-panel (opened)="initPublicKeyExpansionPanel()" [expanded]="routeParams.panelId === 'encryption' ? true : false">
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            Encryption
+        </mat-panel-title>
+        <mat-panel-description>
+            Configure RSA Public Key to encrypt Variable Secrets
+        </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <mat-progress-bar color="accent" mode="indeterminate" *ngIf="showLoadingSpinner['init']"></mat-progress-bar>
+
+    <ng-template matExpansionPanelContent>
+        <div fxLayout="row">
+            <div fxFlex="25"></div>
+            <div fxLayout="column" *ngIf="publicKeyForm">
+                <h3>Generate RSA Key Pair using OpenSSL</h3>
+
+                <ol>
+                    <li>
+                        <code>openssl genrsa -out private-key.pem 2048</code>
+                    </li>
+                    <li>
+                        <code>openssl rsa -pubout -out public-key.pem -in private-key.pem</code>
+                    </li>
+                </ol>
+
+                <p>Add RSA public key <b>public-key.pem</b> file contents generated from step #2 below.</p>
+                <form [formGroup]="publicKeyForm" class="edit-form" (ngSubmit)="updatePublicKey()">
+                    <mat-form-field class="full-width">
+                        <textarea
+                            spellcheck="false"
+                            cdkAutosizeMinRows="4"
+                            cdkTextareaAutosize
+                            #autosize="cdkTextareaAutosize"
+                            formControlName="publicKey"
+                            matInput
+                            placeholder="RSA Public Key">
+                        </textarea>
+                        <mat-error *ngIf="formErrors.get('publicKey')" [innerHTML]="formErrors.get('publicKey')"></mat-error>
+                    </mat-form-field>
+
+                    <button
+                        [disabled]="showLoadingSpinner['savePublicKey'] || !publicKeyForm.valid"
+                        class="save-button"
+                        color="primary"
+                        mat-raised-button>
+                        <span>Save</span>
+                        <mat-progress-spinner
+                            *ngIf="showLoadingSpinner['savePublicKey']"
+                            mode="indeterminate"
+                            diameter="25"
+                            class="inline-block">
+                        </mat-progress-spinner>
+                    </button>
+                </form>
+            </div>
+            <div fxFlex="25"></div>
+        </div>
+    </ng-template>
+</mat-expansion-panel>

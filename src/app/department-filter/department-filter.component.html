@@ -1,0 +1,46 @@
+<div [fxLayout]="fxLayout" [fxLayoutGap]="fxLayoutGap">
+    <mat-form-field>
+        <mat-select placeholder="Departments" (selectionChange)="applyFilter($event, 0)" [(value)]="currentDepartmentId">
+            <mat-option *ngFor="let department of departments" [value]="department.id">{{ department.name }}</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-menu #departmentMenu="matMenu">
+        <button type="button" (click)="openCreateDepartmentDialog()" mat-menu-item>Create New Department</button>
+        <button [disabled]="!currentDepartmentId" type="button" (click)="manageDepartmentSettings()" mat-menu-item>Manage Settings</button>
+    </mat-menu>    
+
+    <button type="button" mat-icon-button [matMenuTriggerFor]="departmentMenu">
+        <mat-icon>more_vert</mat-icon>
+    </button>
+
+    <mat-form-field *ngIf="showCategoryFilter">
+        <mat-select placeholder="Categories" (selectionChange)="applyFilter($event, 1)" [(value)]="currentCategoryId">
+            <mat-option *ngFor="let category of departmentCategories" [value]="category.id">{{ category.name }}</mat-option>
+        </mat-select>
+    </mat-form-field>
+    
+    <mat-menu #categoryMenu="matMenu">
+        <button type="button" [disabled]="!departments?.length || !currentDepartmentId" (click)="openCreateCategoryDialog()" mat-menu-item>Create New Category</button>
+        <button type="button" [disabled]="!departments?.length || !currentCategoryId" (click)="manageCategorySettings()" mat-menu-item>Manage Settings</button>
+    </mat-menu>
+
+    <button *ngIf="showCategoryFilter" type="button" mat-icon-button [matMenuTriggerFor]="categoryMenu">
+        <mat-icon>more_vert</mat-icon>
+    </button>
+
+    <mat-form-field *ngIf="showSubCategoryFilter">
+        <mat-select placeholder="Subcategories" (selectionChange)="applyFilter($event, 2)" [(value)]="currentSubCategoryId">
+            <mat-option *ngFor="let subCategory of departmentSubCategories" [value]="subCategory.id">{{ subCategory.name }}</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-menu #subCategoryMenu="matMenu">
+        <button type="button" [disabled]="!departmentCategories?.length || !currentCategoryId" (click)="openCreateSubCategoryDialog()" mat-menu-item>Create New Subcategory</button>
+        <button type="button" [disabled]="!currentSubCategoryId" (click)="manageSubCategorySettings()" mat-menu-item>Manage Settings</button>
+    </mat-menu>
+
+    <button *ngIf="showSubCategoryFilter" type="button" mat-icon-button [matMenuTriggerFor]="subCategoryMenu">
+        <mat-icon>more_vert</mat-icon>
+    </button>
+</div>

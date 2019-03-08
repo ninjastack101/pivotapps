@@ -1,0 +1,11 @@
+<div>
+    <h2 mat-dialog-title>{{ dialogData.title }}</h2>
+    <mat-dialog-content class="dialog-container">
+        <app-company-settings
+            [apiUrl]="dialogData.apiUrl"
+            [apiUrlCompanies]="dialogData.apiUrlCompanies"
+            [confirmationDialogData]="dialogData.confirmationMessage"
+            [displayedColumns]="dialogData.displayedColumns">
+        </app-company-settings>
+    </mat-dialog-content>
+</div>

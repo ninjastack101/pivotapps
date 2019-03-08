@@ -1,0 +1,89 @@
+<mat-expansion-panel (opened)="buildQuestionsForm()">
+    <mat-expansion-panel-header>
+        <mat-panel-title>Questions</mat-panel-title>
+        <mat-panel-description>
+            Obtain addtional responses from users via Q&A
+        </mat-panel-description>
+    </mat-expansion-panel-header>
+    <mat-progress-bar color="accent" mode="indeterminate" *ngIf="showLoadingSpinner['initQuestionsSection']"></mat-progress-bar>
+    <div *ngIf="questionsForm" fxLayout="row">
+        <div fxFlex="5">
+            <mat-icon
+                matTooltipPosition="right"
+                matTooltipClass="tooltip-expanded"
+                matTooltip="Hold and drag questions to change question order.">
+                info
+            </mat-icon>
+        </div>
+        <form
+            fxFlex
+            class="questions-form"
+            [formGroup]="questionsForm">
+            <div cdkDropList (cdkDropListDropped)="updateQuestionsOrder($event)">
+                <div
+                    cdkDragLockAxis="y"
+                    cdkDrag
+                    formArrayName="questions"
+                    *ngFor="let question of questionsForm.get('questions').controls; let i = index;">
+
+                    <mat-card fxLayout="column" class="question-card" [formGroupName]="i">
+                        <div fxLayout="row" fxLayoutAlign="start center">
+                            <h3 fxFlex="100"></h3>
+                            <button matTooltip="Delete Question" mat-icon-button (click)="removeQuestionsInput(i)">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </div>
+                        <div class="loading-spinner-overlay" *ngIf="showDeleteQuestionLoadingSpinner[i]">
+                            <mat-spinner color="accent"></mat-spinner>
+                        </div>
+
+                        <mat-form-field class="textarea-fullwidth">
+                            <textarea
+                                cdkTextareaAutosize
+                                #autosize="cdkTextareaAutosize"
+                                matInput
+                                formControlName="question"
+                                placeholder="Question">
+                            </textarea>
+                        </mat-form-field>
+
+                        <mat-form-field class="textarea-fullwidth">
+                            <textarea
+                                cdkTextareaAutosize
+                                #autosize="cdkTextareaAutosize"
+                                matInput
+                                formControlName="questionAdaptiveCard"
+                                placeholder="Question (Adaptive Card)">
+                            </textarea>
+                        </mat-form-field>
+
+                        <mat-form-field class="textarea-fullwidth">
+                            <input
+                                name="questionVariableName"
+                                matInput
+                                formControlName="questionVariableName"
+                                placeholder="Question Variable & LUIS Entity Name (must match)">
+                        </mat-form-field>
+                    </mat-card>
+                </div>
+            </div>        
+
+            <div fxLayout="row" fxLayoutGap="10px">
+                <button
+                    [disabled]="showLoadingSpinner['saveQuestions'] || !questionsForm.valid"
+                    class="save-button"
+                    (click)="saveQuestionsForm()"
+                    mat-raised-button>
+                    <span>Save</span>
+                    <mat-progress-spinner
+                        *ngIf="showLoadingSpinner['saveQuestions']"
+                        mode="indeterminate"
+                        diameter="25"
+                        class="inline-block">
+                    </mat-progress-spinner>
+                </button>
+                <button class="save-button-min-width" mat-raised-button (click)="addNewQuestionsInput()">Add another</button>
+            </div>
+        </form>
+    </div>
+</mat-expansion-panel>

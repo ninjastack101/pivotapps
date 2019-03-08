@@ -1,0 +1,131 @@
+/* You can add global styles to this file, and also import other style files */
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.displayNone {
+    display: none !important;
+}
+
+.inline-block {
+    display: inline-block !important;
+}
+
+.save-button {
+    width: 80px;
+    margin-bottom: 20px !important;
+}
+
+.save-button-min-width {
+    min-width: 50px;
+    margin-bottom: 20px !important;
+}
+
+.material-divider {
+    margin: 20px 0 !important;
+    background-color: #0000006b;
+}
+
+.search-icon {
+    cursor: pointer;
+}
+
+.loading-spinner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tooltip-expanded {
+    font-size: 13px !important;
+    overflow-wrap: break-word;
+}
+
+.select-avatar {
+    vertical-align: middle;
+    height: 25px;
+    margin-right: 5px;
+}
+
+.width-100 {
+    width: 100% !important;
+}
+
+.table-container {
+    margin-top: 25px;
+    position: relative;
+    margin-bottom: 50px;
+}
+
+.tab-component {
+    padding: 16px;
+}
+
+.mat-column-select {
+    overflow: visible !important;
+}
+
+.checkbox-column-container {
+    max-width: 50px !important;
+}
+
+.search-form-field {
+    width: 100%;
+}
+
+.dialog-container {
+    position: relative;
+}
+
+.edit-form {
+    width: 800px;
+    margin-top: 25px;
+}
+
+.full-width {
+    width: 100% !important;
+}
+
+.user-nickname {
+    font-size: 14px;
+}
+
+.image-avatar {
+    border-radius: 50%;
+}
+
+.brand-logo-image {
+    width: 200px;
+}
+
+.inline-slide-toggle {
+    margin-bottom: 10px;
+}
+
+.sidenav-logo {
+    margin: 50px 0 0 10px;
+}
+
+.tab-component-container {
+    width: 100%;
+    max-width: 900px;
+}
+
+.max-width-100 {
+    max-width: 100px !important;
+}
+
+.input-icon-button {
+    font-size: 150% !important;
+}
+
+.mat-icon-button-suffix {
+    font-size: 24px !important;
+}

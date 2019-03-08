@@ -1,0 +1,112 @@
+<div>
+    <form fxLayout="column" class="edit-form" [formGroup]="apiSkillForm" (ngSubmit)="updateApiSkillForm()">
+        <mat-form-field>
+            <input name="apiSkillName" matInput formControlName="name" placeholder="Name">
+            <mat-error *ngIf="formErrors.get('name')">
+                {{ formErrors.get('name') }}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <input name="apiUrl" matInput formControlName="apiUrl" placeholder="URL to send the execution request (Eg. Zapier webhooks catch URL)">
+            <mat-error *ngIf="formErrors.get('apiUrl')">
+                {{ formErrors.get('apiUrl') }}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <textarea
+                name="confirmationMessage"
+                matInput
+                cdkTextareaAutosize
+                #autosize="cdkTextareaAutosize"
+                formControlName="confirmationMessage"
+                placeholder="Confirmation Message to send">
+            </textarea>
+            <mat-error *ngIf="formErrors.get('confirmationMessage')">
+                {{ formErrors.get('confirmationMessage') }}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <textarea
+                name="confirmationMessageAdaptiveCard"
+                matInput
+                cdkTextareaAutosize
+                #autosize="cdkTextareaAutosize"
+                formControlName="confirmationMessageAdaptiveCard"
+                placeholder="Confirmation Message to send (Adaptive Card)">
+            </textarea>
+            <mat-error *ngIf="formErrors.get('confirmationMessageAdaptiveCard')">
+                {{ formErrors.get('confirmationMessageAdaptiveCard') }}
+            </mat-error>
+        </mat-form-field>
+
+        <app-department-filter
+            [fxLayoutGap]="'10px'"
+            [currentSubCategoryId]="apiSkill.departmentSubCategoryId"
+            (emptySelection)="clearSubCategory()"
+            (selectionChange)="applyDepartmentFilter($event)">
+        </app-department-filter>
+
+        <div class="inline-slide-toggle" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px">
+            <app-ap-specialized-bot-persona-filter
+                [specializedBotPersonas]="specializedBotPersonas"
+                [currentSpecializedBotPersonaId]="apiSkill.specializedBotPersonaId" 
+                (selectionChange)="saveSpecializedBotPersona($event)">
+            </app-ap-specialized-bot-persona-filter>
+        </div>
+
+        <div class="inline-slide-toggle" fxLayoutGap="15px">
+            <mat-slide-toggle color="primary" formControlName="skipConfirmationPrompt">Skip Confirmation Prompt</mat-slide-toggle>
+            <mat-slide-toggle matTooltipClass="tooltip-expanded" matTooltip="Hide this procedure when using menu button navigation to prevent very large menus from scrolling in PivBot. Users can still access the procedure via LUIS." color="primary" formControlName="hiddenFromMenu">Hidden From Menu</mat-slide-toggle>
+            <mat-slide-toggle matTooltipClass="tooltip-expanded" matTooltip="" color="primary" formControlName="expectExecutionResult">Expect Execution Result</mat-slide-toggle>
+            <mat-slide-toggle matTooltipClass="tooltip-expanded" matTooltip="" color="primary" formControlName="requiresApproval">Requires Approval</mat-slide-toggle>
+            <mat-slide-toggle matTooltipClass="tooltip-expanded" matTooltip="" color="primary" formControlName="resellerManaged">Reseller Managed</mat-slide-toggle>
+        </div>
+
+        <div fxLayout="row" fxLayoutGap="10px">
+            <button
+                [disabled]="showLoadingSpinner['saveApiSkill'] || showLoadingSpinner['loading'] || !apiSkillForm.valid || !formDataChangeDetected"
+                class="save-button"
+                color="primary"
+                mat-raised-button>
+                <span>Save</span>
+                <mat-progress-spinner
+                    *ngIf="showLoadingSpinner['saveApiSkill'] || showLoadingSpinner['loading']"
+                    mode="indeterminate"
+                    diameter="25"
+                    class="inline-block">
+                </mat-progress-spinner>
+            </button>
+
+            <button
+                *ngIf="apiSkill.id"
+                [disabled]="showLoadingSpinner['viewJsonSchema'] || showLoadingSpinner['loading']"
+                class="save-button-min-width"
+                color="primary"
+                type="button"
+                mat-raised-button
+                (click)="viewJsonSchema()">
+                <span>View JSON Schema</span>
+                <mat-progress-spinner
+                    *ngIf="showLoadingSpinner['viewJsonSchema']"
+                    mode="indeterminate"
+                    diameter="25"
+                    class="inline-block">
+                </mat-progress-spinner>
+            </button>
+
+            <button
+                *ngIf="!showLoadingSpinner['saveApiSkill'] && !showLoadingSpinner['loading'] && formDataChangeDetected"
+                type="button"
+                class="save-button"
+                color="primary"
+                (click)="cancelChanges()"
+                mat-raised-button>
+                <span>Cancel</span>
+            </button>
+        </div>
+        
+    </form>
+</div>

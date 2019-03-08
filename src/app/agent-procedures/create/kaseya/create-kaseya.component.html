@@ -1,0 +1,11 @@
+<div fxLayout="row">
+    <div fxFlex="25"></div>
+    <div fxLayout="column">
+        <h3>Create Technical Skill (Kaseya)</h3>
+        <app-skills-kaseya-form
+            [showLoadingSpinner]="showLoadingSpinner"
+            (save)="createKaseyaSkill($event)">
+        </app-skills-kaseya-form>
+    </div>
+    <div fxFlex="25"></div>
+</div>

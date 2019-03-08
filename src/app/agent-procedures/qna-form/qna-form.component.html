@@ -1,0 +1,69 @@
+<div>
+    <form fxLayout="column" class="edit-form" [formGroup]="qnaForm" (ngSubmit)="updateQnAForm()">
+        <mat-form-field>
+            <input name="luisIntentName" matInput formControlName="name" placeholder="LUIS Intent Name">
+            <mat-error *ngIf="formErrors.get('name')">
+                {{ formErrors.get('name') }}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <textarea name="botResponse" matInput formControlName="botResponse" placeholder="Bot response to the user's question"></textarea>
+            <mat-error *ngIf="formErrors.get('botResponse')">
+                {{ formErrors.get('botResponse') }}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <textarea name="botResponseAdaptiveCard" matInput formControlName="botResponseAdaptiveCard" placeholder="Bot response to the user's question using Adaptive Card"></textarea>
+            <mat-error *ngIf="formErrors.get('botResponseAdaptiveCard')">
+                {{ formErrors.get('botResponseAdaptiveCard') }}
+            </mat-error>
+        </mat-form-field>
+
+        <app-department-filter
+            [fxLayoutGap]="'10px'"
+            [currentSubCategoryId]="qna.departmentSubCategoryId"
+            (emptySelection)="clearSubCategory()"
+            (selectionChange)="applyDepartmentFilter($event)">
+        </app-department-filter>
+
+        <div class="inline-slide-toggle" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px">
+            <app-ap-specialized-bot-persona-filter
+                [specializedBotPersonas]="specializedBotPersonas"
+                [currentSpecializedBotPersonaId]="qna.specializedBotPersonaId" 
+                (selectionChange)="saveSpecializedBotPersona($event)">
+            </app-ap-specialized-bot-persona-filter>
+        </div>
+
+        <div class="inline-slide-toggle" fxLayoutGap="15px">
+            <mat-slide-toggle matTooltipClass="tooltip-expanded" matTooltip="Hide this procedure when using menu button navigation to prevent very large menus from scrolling in PivBot. Users can still access the procedure via LUIS." color="primary" formControlName="hiddenFromMenu">Hidden From Menu</mat-slide-toggle>
+            <mat-slide-toggle matTooltipClass="tooltip-expanded" matTooltip="" color="primary" formControlName="resellerManaged">Reseller Managed</mat-slide-toggle>
+        </div>
+        <div fxLayout="row" fxLayoutGap="10px">
+            <button
+                [disabled]="showLoadingSpinner['saveQnA'] || showLoadingSpinner['loading'] || !qnaForm.valid || !formDataChangeDetected"
+                class="save-button"
+                color="primary"
+                mat-raised-button>
+                <span>Save</span>
+                <mat-progress-spinner
+                    *ngIf="showLoadingSpinner['saveQnA'] || showLoadingSpinner['loading']"
+                    mode="indeterminate"
+                    diameter="25"
+                    class="inline-block">
+                </mat-progress-spinner>
+            </button>
+        
+            <button
+                *ngIf="!showLoadingSpinner['saveQnA'] && !showLoadingSpinner['loading'] && formDataChangeDetected"
+                type="button"
+                class="save-button"
+                color="primary"
+                (click)="cancelChanges()"
+                mat-raised-button>
+                <span>Cancel</span>
+            </button>
+        </div>
+    </form>
+</div>

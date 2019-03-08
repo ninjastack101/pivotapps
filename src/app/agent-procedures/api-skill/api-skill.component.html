@@ -1,0 +1,50 @@
+<div>
+    <mat-progress-bar color="accent" mode="indeterminate" *ngIf="!apiSkill"></mat-progress-bar>
+    <div fxLayout="row" *ngIf="apiSkill">
+        <button mat-icon-button (click)="location.back()">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div fxFlex="25"></div>
+        <div fxLayout="column">
+            <div class="loading-spinner-overlay" *ngIf="showLoadingSpinner['overlay']">
+                <mat-spinner color="accent"></mat-spinner>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <h3 fxFlex="100">Edit API Skill</h3>
+                <button matTooltip="Delete API Skill" mat-icon-button (click)="deleteApiSkill()">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+            <app-agent-procedures-api-skill-form
+                [apiSkill]="apiSkill"
+                [showLoadingSpinner]="showLoadingSpinner"
+                (save)="updateApiSkillForm($event)">
+            </app-agent-procedures-api-skill-form>
+            <app-last-modified 
+                [skill]="apiSkill">
+            </app-last-modified>
+        </div>
+        <div fxFlex="25"></div>
+    </div>
+    <div *ngIf="apiSkill">
+        <app-agent-procedure-questions
+            [skillId]="apiSkill.id">
+        </app-agent-procedure-questions>
+        <app-agent-procedures-messages
+            intent="apiSkill"
+            [skillId]="apiSkill.id"
+            [messageCategories]="messageCategories"
+            [specializedBotPersonaId]="apiSkill.specializedBotPersonaId">
+        </app-agent-procedures-messages>
+        <app-agent-procedures-permissions
+            skill="Technical Skill (API)">
+        </app-agent-procedures-permissions>
+        <app-agent-procedures-luis
+            [skillId]="apiSkill.id"
+            [skillName]="apiSkill.name">
+        </app-agent-procedures-luis>
+        <app-ticket-integration
+            [skillId]="apiSkill.id">
+        </app-ticket-integration>
+    </div>
+</div>

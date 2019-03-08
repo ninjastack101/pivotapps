@@ -1,0 +1,49 @@
+<div>
+    <mat-progress-bar color="accent" mode="indeterminate" *ngIf="!kaseyaSkill"></mat-progress-bar>
+    <div fxLayout="row" *ngIf="kaseyaSkill">
+        <button mat-icon-button (click)="navigateBack()">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div fxFlex="25"></div>
+        <div fxLayout="column">
+            <div class="loading-spinner-overlay" *ngIf="showLoadingSpinner['overlay']">
+                <mat-spinner color="accent"></mat-spinner>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <h3 fxFlex="100">Edit Technical Skill (Kaseya)</h3>
+                <button matTooltip="Delete Kaseya Skill" mat-icon-button (click)="deleteKaseyaSkill()">
+                    <mat-icon>delete</mat-icon>
+                </button>                
+            </div>
+            <app-skills-kaseya-form
+                [kaseyaSkill]="kaseyaSkill"
+                [showLoadingSpinner]="showLoadingSpinner"
+                (save)="updateKaseyaSkillForm($event)">
+            </app-skills-kaseya-form>
+            <app-last-modified 
+                [skill]="kaseyaSkill">
+            </app-last-modified>
+        </div>
+        <div fxFlex="25"></div>
+    </div>
+    <div *ngIf="kaseyaSkill">
+        <app-agent-procedures-messages
+            [skillId]="kaseyaSkill.id"
+            [messageCategories]="messageCategories"
+            [specializedBotPersonaId]="kaseyaSkill.specializedBotPersonaId">
+        </app-agent-procedures-messages>
+        <app-agent-procedures-permissions
+            skill="Technical Skill (Kaseya)">
+        </app-agent-procedures-permissions>
+        <app-agent-procedure-questions
+            [skillId]="kaseyaSkill.id">
+        </app-agent-procedure-questions>
+        <app-agent-procedures-luis
+            [skillId]="kaseyaSkill.id"
+            [skillName]="kaseyaSkill.name">
+        </app-agent-procedures-luis>
+        <app-ticket-integration
+            [skillId]="kaseyaSkill.id">
+        </app-ticket-integration>
+    </div>
+</div>
